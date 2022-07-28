@@ -357,7 +357,7 @@ d-title {
 
 </style>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
 <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
@@ -940,7 +940,7 @@ d-appendix d-footnote-list a.footnote-backlink {
   color: var(--hover-color, white);
 }</style>
 <script src="/Library/Frameworks/R.framework/Versions/4.1/Resources/library/rmarkdown/rmd/h/pandoc/header-attrs.js"></script>
-<script src="/Library/Frameworks/R.framework/Versions/4.1/Resources/library/rmarkdown/rmd/h/jquery/jquery.min.js"></script>
+<script src="/Library/Frameworks/R.framework/Versions/4.1/Resources/library/jquerylib/lib/3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="/Library/Frameworks/R.framework/Versions/4.1/Resources/library/rmarkdown/rmd/h/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
 <script src="/Library/Frameworks/R.framework/Versions/4.1/Resources/library/rmarkdown/rmd/h/bootstrap/js/bootstrap.min.js"></script>
@@ -986,6 +986,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -1006,6 +1007,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -1158,25 +1162,13 @@ $(document).ready(function () {
 <header class="header header--fixed" role="banner">
 <nav class="distill-site-nav distill-site-header">
 <div class="nav-left">
-<a href="index.html" class="title">Summer 2021 Research</a>
+<a href="index.html" class="title">Sherry Huang</a>
 <input id="distill-search" class="nav-search hidden" type="text" placeholder="Search..."/>
 </div>
 <div class="nav-right">
 <a href="index.html">Home</a>
-<div class="nav-dropdown">
-<button class="nav-dropbtn">
-Data Sets
- 
-<span class="down-arrow">&#x25BE;</span>
-</button>
-<div class="nav-dropdown-content">
-<a href="black-box.html">Black Box</a>
-<a href="white-box.html">White Box</a>
-<a href="repeatability.html">Repeatability</a>
-</div>
-</div>
-<a href="blog.html">Blog</a>
-<a href="sherry.html">Sherry</a>
+<a href="blog.html">Blogs</a>
+<a href="sherry.html">About Me</a>
 <a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
 </div>
 </nav>
@@ -1188,7 +1180,7 @@ Data Sets
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -1203,29 +1195,11 @@ Data Sets
         <li>
   <a href="index.html">Home</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Data Sets
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="black-box.html">Black Box</a>
-    </li>
-    <li>
-      <a href="white-box.html">White Box</a>
-    </li>
-    <li>
-      <a href="repeatability.html">Repeatability</a>
-    </li>
-  </ul>
+<li>
+  <a href="blog.html">Blogs</a>
 </li>
 <li>
-  <a href="blog.html">Blog</a>
-</li>
-<li>
-  <a href="sherry.html">Sherry</a>
+  <a href="sherry.html">About Me</a>
 </li>
       </ul>
     </div><!--/.nav-collapse -->
@@ -1249,7 +1223,7 @@ m010003_ac &lt;- wb_analysiscomparison %&gt;%
   filter(pair_id == &quot;M010003&quot;)
 
 head(m010003_ac)</code></pre>
-<pre><code>## # A tibble: 6 x 22
+<pre><code>## # A tibble: 6 × 22
 ##   pair_id examiner_anonymized mating latent_value_analys… comparison_determinat…
 ##   &lt;chr&gt;   &lt;chr&gt;               &lt;chr&gt;  &lt;chr&gt;                &lt;chr&gt;                 
 ## 1 M010003 EA1338              Mates  VALUE                Indiv                 
@@ -1266,7 +1240,7 @@ head(m010003_ac)</code></pre>
 ## #   median_clarity_comparison &lt;dbl&gt;, correspondence &lt;chr&gt;,
 ## #   clarity_corresponding &lt;dbl&gt;</code></pre>
 <pre class="r"><code>distinct(wb_analysiscomparison, pair_id)</code></pre>
-<pre><code>## # A tibble: 315 x 1
+<pre><code>## # A tibble: 315 × 1
 ##    pair_id
 ##    &lt;chr&gt;  
 ##  1 M010003
@@ -1281,7 +1255,7 @@ head(m010003_ac)</code></pre>
 ## 10 M063053
 ## # … with 305 more rows</code></pre>
 <pre class="r"><code>distinct(m010003_ac, examiner_anonymized)</code></pre>
-<pre><code>## # A tibble: 15 x 1
+<pre><code>## # A tibble: 15 × 1
 ##    examiner_anonymized
 ##    &lt;chr&gt;              
 ##  1 EA1338             
@@ -1301,7 +1275,16 @@ head(m010003_ac)</code></pre>
 ## 15 EA2010</code></pre>
 <div id="same-pair-comparison" class="section level1">
 <h1>Same Pair Comparison</h1>
-<p>The graph below shows the minutiae mappings of the latent print M010003, across many examiners. The complete black dots show the (x, y) coordinates that examiners marked on the latent print during the analysis stage, and the slightly transparent points show the (x, y) coordinates that examiners marked on the latent print during the comparison stage. The lines indicate movements of the minutiae markings done by examiners between the analysis and comparison stages. The hex shapes show the density of clusters of points in the comparison stage; darker hexes show a larger cluster of points and lighter hexes show a smaller cluster of points.</p>
+<p>The graph below shows the minutiae mappings of the latent print
+M010003, across many examiners. The complete black dots show the (x, y)
+coordinates that examiners marked on the latent print during the
+analysis stage, and the slightly transparent points show the (x, y)
+coordinates that examiners marked on the latent print during the
+comparison stage. The lines indicate movements of the minutiae markings
+done by examiners between the analysis and comparison stages. The hex
+shapes show the density of clusters of points in the comparison stage;
+darker hexes show a larger cluster of points and lighter hexes show a
+smaller cluster of points.</p>
 <pre class="r"><code>ggplot(data = m010003_ac) +
   geom_hex(aes(x = x_comparison, y = y_comparison, alpha = log(..count..)),
            bins = 20, fill = &quot;#000000&quot;) +
@@ -1318,7 +1301,10 @@ head(m010003_ac)</code></pre>
 <pre><code>## Warning: Removed 6 rows containing missing values (geom_point).</code></pre>
 <pre><code>## Warning: Removed 19 rows containing missing values (geom_segment).</code></pre>
 <p><img src="wb_ac_files/figure-html/m010003-ac-1.png" width="672" /></p>
-<p>An interesting comparison to make would be how each examiner marked the print. Using the same plotting scheme as above, the below <span class="math inline">\(15\)</span> graphs below show how each examiner marked the pair.</p>
+<p>An interesting comparison to make would be how each examiner marked
+the print. Using the same plotting scheme as above, the below <span
+class="math inline">\(15\)</span> graphs below show how each examiner
+marked the pair.</p>
 <div id="same-pair-one-examiner-comparison" class="section level2">
 <h2>Same Pair, One Examiner Comparison</h2>
 <pre class="r"><code>ea1338_ac &lt;- m010003_ac %&gt;%
@@ -1568,7 +1554,10 @@ ggplot(data = ea2010_ac) +
 <pre><code>## Warning: Removed 2 rows containing missing values (geom_point).</code></pre>
 <pre><code>## Warning: Removed 2 rows containing missing values (geom_segment).</code></pre>
 <p><img src="wb_ac_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
-<p>An interesting point shown in the graphs is that there seems to be a lot of minutiae markings when there are many clusters of points. Whether they are moving towards or away from the darker hexes is unclear for now.</p>
+<p>An interesting point shown in the graphs is that there seems to be a
+lot of minutiae markings when there are many clusters of points. Whether
+they are moving towards or away from the darker hexes is unclear for
+now.</p>
 <pre class="r"><code>m020006_ac &lt;- wb_analysiscomparison %&gt;%
   filter(pair_id == &quot;M020006&quot;)
 
@@ -1644,7 +1633,10 @@ ggplot(data = m038070_ac) +
 </div>
 <div id="same-latents-comparison" class="section level1">
 <h1>Same Latents Comparison</h1>
-<p>Some latent prints were used more than once within different pairs. Below, we map both latents during the analysis stage to see how similar the minutiae markings are when used in different circumstances (and across different examiners).</p>
+<p>Some latent prints were used more than once within different pairs.
+Below, we map both latents during the analysis stage to see how similar
+the minutiae markings are when used in different circumstances (and
+across different examiners).</p>
 <pre class="r"><code>n025403_ac &lt;- wb_analysiscomparison %&gt;% filter(pair_id == &quot;N025403&quot;)
 
 ggplot(data = n025403_ac) +
@@ -1656,7 +1648,6 @@ ggplot(data = n025403_ac) +
   my_theme +
   scale_color_grey() +
   labs(title = &quot;Pair N025403: Analysis Evaluation&quot;,
-       subtitle = &quot;Sherry Huang, July 2021&quot;,
        x = &quot;x&quot;, y = &quot;y&quot;, color = &quot;Analysis Type&quot;)</code></pre>
 <pre><code>## Warning: Removed 1 rows containing non-finite values (stat_binhex).</code></pre>
 <pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
@@ -1671,7 +1662,6 @@ ggplot(data = n025403_ac) +
   my_theme +
   scale_color_grey() +
   labs(title = &quot;Pair M025026: Analysis Evaluation&quot;,
-       subtitle = &quot;Sherry Huang, July 2021&quot;,
        x = &quot;x&quot;, y = &quot;y&quot;, color = &quot;Analysis Type&quot;)</code></pre>
 <pre><code>## Warning: Removed 2 rows containing non-finite values (stat_binhex).</code></pre>
 <pre><code>## Warning: Removed 2 rows containing missing values (geom_point).</code></pre>
@@ -1687,7 +1677,11 @@ ggplot(data = n025403_ac) +
 <pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
 <pre><code>## Warning: Removed 2 rows containing missing values (geom_point).</code></pre>
 <p><img src="wb_ac_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
-<p>In the latent print L_025 above, the minutiae markings are pretty similar, but there seems to be more minutiae markings in gold than green/blue/teal (?). The gold is for the latent used in a mated pair, and the teal open circles is for the latent that is paired with a non-mate.</p>
+<p>In the latent print L_025 above, the minutiae markings are pretty
+similar, but there seems to be more minutiae markings in gold than
+green/blue/teal (?). The gold is for the latent used in a mated pair,
+and the teal open circles is for the latent that is paired with a
+non-mate.</p>
 <pre class="r"><code>n027480_ac &lt;- wb_analysiscomparison %&gt;% filter(pair_id == &quot;N027480&quot;)
 
 ggplot(data = n027480_ac) +
@@ -1730,7 +1724,11 @@ ggplot(data = n027480_ac) +
 <pre><code>## Warning: Removed 5 rows containing missing values (geom_point).</code></pre>
 <pre><code>## Warning: Removed 7 rows containing missing values (geom_point).</code></pre>
 <p><img src="wb_ac_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
-<p>In the graph above for latent print L_027, it seems that the dark blue and red minutiae markings are equally found all over in both common and not common places. The red shows the latent print when it was paired with a non-mate, and the dark blue shows the latent print when it was paired with its mate.</p>
+<p>In the graph above for latent print L_027, it seems that the dark
+blue and red minutiae markings are equally found all over in both common
+and not common places. The red shows the latent print when it was paired
+with a non-mate, and the dark blue shows the latent print when it was
+paired with its mate.</p>
 <pre class="r"><code>n039426_ac &lt;- wb_analysiscomparison %&gt;% filter(pair_id == &quot;N039426&quot;)
 
 ggplot(data = n039426_ac) +
@@ -1776,7 +1774,10 @@ ggplot(data = m039057_ac) +
 
 ## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
 <p><img src="wb_ac_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
-<p>For latent print L_039, there appears to be way more minutiae markings for the mated latent print, even though it’s the same latent print (and they are shown this before comparison so they shouldn’t know/suspect if it’s a mate).</p>
+<p>For latent print L_039, there appears to be way more minutiae
+markings for the mated latent print, even though it’s the same latent
+print (and they are shown this before comparison so they shouldn’t
+know/suspect if it’s a mate).</p>
 <pre class="r"><code>n148457_ac &lt;- wb_analysiscomparison %&gt;% filter(pair_id == &quot;N148457&quot;)
 
 ggplot(data = n148457_ac) +
@@ -1821,7 +1822,10 @@ ggplot(data = m148100_ac) +
 <pre><code>## Warning: Removed 8 rows containing missing values (geom_point).</code></pre>
 <pre><code>## Warning: Removed 5 rows containing missing values (geom_point).</code></pre>
 <p><img src="wb_ac_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
-<p>A consistent theme I see throughout these graphs is that even with matching minutiae markings between the latent print in matches and non-matches, there is still an abundance of points from the latent print of a mated pair than a non-mated pair.</p>
+<p>A consistent theme I see throughout these graphs is that even with
+matching minutiae markings between the latent print in matches and
+non-matches, there is still an abundance of points from the latent print
+of a mated pair than a non-mated pair.</p>
 <pre class="r"><code>n153389_ac &lt;- wb_analysiscomparison %&gt;% filter(pair_id == &quot;N153389&quot;)
 
 ggplot(data = n153389_ac) +
@@ -1955,13 +1959,15 @@ ggplot(data = m202206_ac) +
 
 ## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
 <p><img src="wb_ac_files/figure-html/unnamed-chunk-44-1.png" width="672" /></p>
-<p>This one had a surprisingly even amount of minutiae markings, but I will also note that in the non-mated analysis, there was already a lot of movement of minutiae.</p>
+<p>This one had a surprisingly even amount of minutiae markings, but I
+will also note that in the non-mated analysis, there was already a lot
+of movement of minutiae.</p>
 <div id="same-latent-one-examiner-comparison" class="section level2">
 <h2>Same Latent, One Examiner Comparison</h2>
 <pre class="r"><code>n027480_1392 &lt;- n027480_ac %&gt;% filter(examiner_anonymized == &quot;EA1392&quot;)
 m027001_1392 &lt;- m027001_ac %&gt;% filter(examiner_anonymized == &quot;EA1392&quot;)
 
-ggplot(data = n027480_1392) +
+plot1 &lt;- ggplot(data = n027480_1392) +
   geom_hex(aes(x = x_analysis, y = y_analysis, alpha = log(..count..)),
            bins = 20, fill = &quot;#000000&quot;) +
   geom_point(aes(x = x_analysis, y = y_analysis)) +
@@ -1969,11 +1975,29 @@ ggplot(data = n027480_1392) +
                    yend = y_comparison), alpha = 0.5) +
   my_theme +
   scale_color_grey() +
-  labs(title = &quot;Pair N027480, Examiner EA1392: Analysis Evaluation&quot;,
-       subtitle = &quot;Sherry Huang, July 2021&quot;,
-       x = &quot;x&quot;, y = &quot;y&quot;, color = &quot;Analysis Type&quot;)</code></pre>
-<pre><code>## Warning: Removed 1 rows containing non-finite values (stat_binhex).</code></pre>
-<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
+  labs(title = &quot;Pair N027480&quot;,
+       subtitle = &quot;Examiner EA1392&quot;,
+       x = &quot;x&quot;, y = &quot;y&quot;, color = &quot;Analysis Type&quot;) +
+  theme(legend.position = &#39;bottom&#39;) +
+  scale_x_continuous(limits=c(100, 700))
+plot2 &lt;- ggplot(data = m027001_1392) +
+  geom_hex(aes(x = x_analysis, y = y_analysis, alpha = log(..count..)),
+           bins = 20, fill = &quot;#000000&quot;) +
+  geom_point(aes(x = x_analysis, y = y_analysis)) +
+  geom_segment(aes(x = x_analysis, y = y_analysis, xend = x_comparison,
+                   yend = y_comparison), alpha = 0.5) +
+  my_theme +
+  scale_color_grey() +
+  labs(title = &quot;Pair M027001&quot;,
+       subtitle = &quot;Examiner EA1392&quot;,
+       x = &quot;x&quot;, y = &quot;y&quot;, color = &quot;Analysis Type&quot;) +
+  theme(legend.position = &#39;bottom&#39;) +
+  scale_x_continuous(limits=c(100, 700))
+
+ggarrange(plot1, plot2)</code></pre>
+<pre><code>## Warning: Removed 3 rows containing non-finite values (stat_binhex).</code></pre>
+<pre><code>## Warning: Removed 3 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 3 rows containing missing values (geom_segment).</code></pre>
 <pre><code>## Warning: Removed 1 rows containing missing values (geom_segment).</code></pre>
 <p><img src="wb_ac_files/figure-html/unnamed-chunk-45-1.png" width="672" /></p>
 <pre class="r"><code>ggplot(data = m027001_1392) +
@@ -1989,19 +2013,20 @@ ggplot(data = n027480_1392) +
        x = &quot;x&quot;, y = &quot;y&quot;, color = &quot;Analysis Type&quot;)</code></pre>
 <p><img src="wb_ac_files/figure-html/unnamed-chunk-46-1.png" width="672" /></p>
 <pre class="r"><code>ggplot() +
-  geom_point(data = n027480_1392, aes(x = x_analysis, y = y_analysis), color = &quot;#CBDFBD&quot;,
+  geom_point(data = n027480_1392, aes(x = x_analysis, y = y_analysis), color = &quot;#E63946&quot;,
              shape = 1) +
-  geom_point(data = m027001_1392, aes(x = x_analysis, y = y_analysis), color = &quot;#F19C79&quot;) +
+  geom_point(data = m027001_1392, aes(x = x_analysis, y = y_analysis), color = &quot;#1D3557&quot;) +
   my_theme +
   labs(title = &quot;Minutiae Mappings of Latent Print L_027&quot;,
        subtitle = &quot;Examiner EA1392&quot;, x = &quot;x&quot;, y = &quot;y&quot;)</code></pre>
 <pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
 <p><img src="wb_ac_files/figure-html/unnamed-chunk-47-1.png" width="672" /></p>
-<p>For this individual examiner, on the same latent print, they marked more minutiae on the non-mated latent print than the latent one.</p>
+<p>For this individual examiner, on the same latent print, they marked
+more minutiae on the non-mated latent print than the latent one.</p>
 <pre class="r"><code>n148457_1363 &lt;- n148457_ac %&gt;% filter(examiner_anonymized == &quot;EA1363&quot;)
 m148100_1363 &lt;- m148100_ac %&gt;% filter(examiner_anonymized == &quot;EA1363&quot;)
 
-ggplot(data = n148457_1363) +
+plot3 &lt;- ggplot(data = n148457_1363) +
   geom_hex(aes(x = x_analysis, y = y_analysis, alpha = log(..count..)),
            bins = 20, fill = &quot;#000000&quot;) +
   geom_point(aes(x = x_analysis, y = y_analysis)) +
@@ -2009,9 +2034,24 @@ ggplot(data = n148457_1363) +
                    yend = y_comparison), alpha = 0.5) +
   my_theme +
   scale_color_grey() +
-  labs(title = &quot;Pair N148457, Examiner EA1363: Analysis Evaluation&quot;,
-       subtitle = &quot;Sherry Huang, July 2021&quot;,
-       x = &quot;x&quot;, y = &quot;y&quot;, color = &quot;Analysis Type&quot;)</code></pre>
+  labs(title = &quot;Pair N148457&quot;,
+       subtitle = &quot;Examiner EA1363&quot;,
+       x = &quot;x&quot;, y = &quot;y&quot;, color = &quot;Analysis Type&quot;) +
+  theme(legend.position = &#39;bottom&#39;)
+plot4 &lt;- ggplot(data = m148100_1363) +
+  geom_hex(aes(x = x_analysis, y = y_analysis, alpha = log(..count..)),
+           bins = 20, fill = &quot;#000000&quot;) +
+  geom_point(aes(x = x_analysis, y = y_analysis)) +
+  geom_segment(aes(x = x_analysis, y = y_analysis, xend = x_comparison,
+                   yend = y_comparison), alpha = 0.5) +
+  my_theme +
+  scale_color_grey() +
+  labs(title = &quot;Pair M148100&quot;,
+       subtitle = &quot;Examiner EA1363&quot;,
+       x = &quot;x&quot;, y = &quot;y&quot;, color = &quot;Analysis Type&quot;) +
+  theme(legend.position = &#39;bottom&#39;)
+
+ggarrange(plot3, plot4)</code></pre>
 <p><img src="wb_ac_files/figure-html/unnamed-chunk-48-1.png" width="672" /></p>
 <pre class="r"><code>ggplot(data = m148100_1363) +
   geom_hex(aes(x = x_analysis, y = y_analysis, alpha = log(..count..)),
@@ -2026,9 +2066,9 @@ ggplot(data = n148457_1363) +
        x = &quot;x&quot;, y = &quot;y&quot;, color = &quot;Analysis Type&quot;)</code></pre>
 <p><img src="wb_ac_files/figure-html/unnamed-chunk-49-1.png" width="672" /></p>
 <pre class="r"><code>ggplot() +
-  geom_point(data = n148457_1363, aes(x = x_analysis, y = y_analysis), color = &quot;#EE6055&quot;,
+  geom_point(data = n148457_1363, aes(x = x_analysis, y = y_analysis), color = &quot;#E63946&quot;,
              shape = 1) +
-  geom_point(data = m148100_1363, aes(x = x_analysis, y = y_analysis), color = &quot;#60D394&quot;) +
+  geom_point(data = m148100_1363, aes(x = x_analysis, y = y_analysis), color = &quot;#1D3557&quot;) +
   my_theme +
   labs(title = &quot;Minutiae Mappings of Latent Print L_148&quot;,
        subtitle = &quot;Examiner EA1363&quot;, x = &quot;x&quot;, y = &quot;y&quot;)</code></pre>
@@ -2127,6 +2167,468 @@ ggplot(data = n148457_1363) +
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
 <pre><code>## Warning: Removed 1974 rows containing non-finite values (stat_bin).</code></pre>
 <p><img src="wb_ac_files/figure-html/unnamed-chunk-61-1.png" width="672" /></p>
+<pre class="r"><code>wb_analysiscomparison %&gt;% distinct(examiner_anonymized)</code></pre>
+<pre><code>## # A tibble: 170 × 1
+##    examiner_anonymized
+##    &lt;chr&gt;              
+##  1 EA1338             
+##  2 EA1365             
+##  3 EA1424             
+##  4 EA1474             
+##  5 EA1480             
+##  6 EA1567             
+##  7 EA1657             
+##  8 EA1675             
+##  9 EA1689             
+## 10 EA1747             
+## # … with 160 more rows</code></pre>
+<pre class="r"><code>ggplot(data = m010003_ac) +
+  geom_point(aes(x = x_analysis, y = y_analysis, color = examiner_anonymized)) +
+  geom_point(aes(x = x_comparison, y = y_comparison, color = examiner_anonymized), shape = 2) +
+  geom_segment(aes(x = x_analysis, y = y_analysis, xend = x_comparison,
+                   yend = y_comparison, color = examiner_anonymized), alpha = 0.5) +
+  my_theme +
+  labs(title = &quot;Minutiae Variation by Examiner&quot;,
+       subtitle = &quot;Pair M010003&quot;,
+       x = &quot;x&quot;, y = &quot;y&quot;, color = &quot;Examiner&quot;)</code></pre>
+<pre><code>## Warning: Removed 13 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 6 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 19 rows containing missing values (geom_segment).</code></pre>
+<p><img src="wb_ac_files/figure-html/unnamed-chunk-63-1.png" width="672" /></p>
+<pre class="r"><code>ggplot(data = m020006_ac) +
+  geom_point(aes(x = x_analysis, y = y_analysis, color = examiner_anonymized)) +
+  geom_point(aes(x = x_comparison, y = y_comparison, color = examiner_anonymized)) +
+  geom_segment(aes(x = x_analysis, y = y_analysis, xend = x_comparison,
+                   yend = y_comparison, color = examiner_anonymized), alpha = 0.5) +
+  my_theme +
+  labs(title = &quot;Minutiae Variation by Examiner&quot;,
+       subtitle = &quot;Pair M020006&quot;,
+       x = &quot;x&quot;, y = &quot;y&quot;, color = &quot;Examiner&quot;)</code></pre>
+<pre><code>## Warning: Removed 4 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 4 rows containing missing values (geom_segment).</code></pre>
+<p><img src="wb_ac_files/figure-html/unnamed-chunk-64-1.png" width="672" /></p>
+<pre class="r"><code>m020006_ac %&gt;% distinct(examiner_anonymized)</code></pre>
+<pre><code>## # A tibble: 11 × 1
+##    examiner_anonymized
+##    &lt;chr&gt;              
+##  1 EA1343             
+##  2 EA1374             
+##  3 EA1394             
+##  4 EA1526             
+##  5 EA1604             
+##  6 EA1660             
+##  7 EA1666             
+##  8 EA1697             
+##  9 EA1761             
+## 10 EA1815             
+## 11 EA1817</code></pre>
+<pre class="r"><code>m020006_ac %&gt;% filter(examiner_anonymized == &quot;EA1343&quot;)</code></pre>
+<pre><code>## # A tibble: 14 × 22
+##    pair_id examiner_anonymized mating latent_value_analy… comparison_determinat…
+##    &lt;chr&gt;   &lt;chr&gt;               &lt;chr&gt;  &lt;chr&gt;               &lt;chr&gt;                 
+##  1 M020006 EA1343              Mates  VALUE               Indiv                 
+##  2 M020006 EA1343              Mates  VALUE               Indiv                 
+##  3 M020006 EA1343              Mates  VALUE               Indiv                 
+##  4 M020006 EA1343              Mates  VALUE               Indiv                 
+##  5 M020006 EA1343              Mates  VALUE               Indiv                 
+##  6 M020006 EA1343              Mates  VALUE               Indiv                 
+##  7 M020006 EA1343              Mates  VALUE               Indiv                 
+##  8 M020006 EA1343              Mates  VALUE               Indiv                 
+##  9 M020006 EA1343              Mates  VALUE               Indiv                 
+## 10 M020006 EA1343              Mates  VALUE               Indiv                 
+## 11 M020006 EA1343              Mates  VALUE               Indiv                 
+## 12 M020006 EA1343              Mates  VALUE               Indiv                 
+## 13 M020006 EA1343              Mates  VALUE               Indiv                 
+## 14 M020006 EA1343              Mates  VALUE               Indiv                 
+## # … with 17 more variables: detailed_outcome &lt;chr&gt;, difficulty &lt;chr&gt;,
+## #   x_analysis &lt;dbl&gt;, y_analysis &lt;dbl&gt;, x_comparison &lt;dbl&gt;, y_comparison &lt;dbl&gt;,
+## #   min_distance &lt;dbl&gt;, latent_ac_change &lt;chr&gt;, analysis_type &lt;chr&gt;,
+## #   cmp_type &lt;chr&gt;, feature_type &lt;chr&gt;, clarity_analysis &lt;dbl&gt;,
+## #   clarity_comparison &lt;dbl&gt;, median_clarity_analysis &lt;dbl&gt;,
+## #   median_clarity_comparison &lt;dbl&gt;, correspondence &lt;chr&gt;,
+## #   clarity_corresponding &lt;dbl&gt;</code></pre>
+<pre class="r"><code>m020006_ac %&gt;% filter(examiner_anonymized == &quot;EA1374&quot;)</code></pre>
+<pre><code>## # A tibble: 15 × 22
+##    pair_id examiner_anonymized mating latent_value_analy… comparison_determinat…
+##    &lt;chr&gt;   &lt;chr&gt;               &lt;chr&gt;  &lt;chr&gt;               &lt;chr&gt;                 
+##  1 M020006 EA1374              Mates  VEO                 Excl                  
+##  2 M020006 EA1374              Mates  VEO                 Excl                  
+##  3 M020006 EA1374              Mates  VEO                 Excl                  
+##  4 M020006 EA1374              Mates  VEO                 Excl                  
+##  5 M020006 EA1374              Mates  VEO                 Excl                  
+##  6 M020006 EA1374              Mates  VEO                 Excl                  
+##  7 M020006 EA1374              Mates  VEO                 Excl                  
+##  8 M020006 EA1374              Mates  VEO                 Excl                  
+##  9 M020006 EA1374              Mates  VEO                 Excl                  
+## 10 M020006 EA1374              Mates  VEO                 Excl                  
+## 11 M020006 EA1374              Mates  VEO                 Excl                  
+## 12 M020006 EA1374              Mates  VEO                 Excl                  
+## 13 M020006 EA1374              Mates  VEO                 Excl                  
+## 14 M020006 EA1374              Mates  VEO                 Excl                  
+## 15 M020006 EA1374              Mates  VEO                 Excl                  
+## # … with 17 more variables: detailed_outcome &lt;chr&gt;, difficulty &lt;chr&gt;,
+## #   x_analysis &lt;dbl&gt;, y_analysis &lt;dbl&gt;, x_comparison &lt;dbl&gt;, y_comparison &lt;dbl&gt;,
+## #   min_distance &lt;dbl&gt;, latent_ac_change &lt;chr&gt;, analysis_type &lt;chr&gt;,
+## #   cmp_type &lt;chr&gt;, feature_type &lt;chr&gt;, clarity_analysis &lt;dbl&gt;,
+## #   clarity_comparison &lt;dbl&gt;, median_clarity_analysis &lt;dbl&gt;,
+## #   median_clarity_comparison &lt;dbl&gt;, correspondence &lt;chr&gt;,
+## #   clarity_corresponding &lt;dbl&gt;</code></pre>
+<pre class="r"><code>m020006_ac %&gt;% filter(examiner_anonymized == &quot;EA1394&quot;)</code></pre>
+<pre><code>## # A tibble: 18 × 22
+##    pair_id examiner_anonymized mating latent_value_analy… comparison_determinat…
+##    &lt;chr&gt;   &lt;chr&gt;               &lt;chr&gt;  &lt;chr&gt;               &lt;chr&gt;                 
+##  1 M020006 EA1394              Mates  VALUE               Indiv                 
+##  2 M020006 EA1394              Mates  VALUE               Indiv                 
+##  3 M020006 EA1394              Mates  VALUE               Indiv                 
+##  4 M020006 EA1394              Mates  VALUE               Indiv                 
+##  5 M020006 EA1394              Mates  VALUE               Indiv                 
+##  6 M020006 EA1394              Mates  VALUE               Indiv                 
+##  7 M020006 EA1394              Mates  VALUE               Indiv                 
+##  8 M020006 EA1394              Mates  VALUE               Indiv                 
+##  9 M020006 EA1394              Mates  VALUE               Indiv                 
+## 10 M020006 EA1394              Mates  VALUE               Indiv                 
+## 11 M020006 EA1394              Mates  VALUE               Indiv                 
+## 12 M020006 EA1394              Mates  VALUE               Indiv                 
+## 13 M020006 EA1394              Mates  VALUE               Indiv                 
+## 14 M020006 EA1394              Mates  VALUE               Indiv                 
+## 15 M020006 EA1394              Mates  VALUE               Indiv                 
+## 16 M020006 EA1394              Mates  VALUE               Indiv                 
+## 17 M020006 EA1394              Mates  VALUE               Indiv                 
+## 18 M020006 EA1394              Mates  VALUE               Indiv                 
+## # … with 17 more variables: detailed_outcome &lt;chr&gt;, difficulty &lt;chr&gt;,
+## #   x_analysis &lt;dbl&gt;, y_analysis &lt;dbl&gt;, x_comparison &lt;dbl&gt;, y_comparison &lt;dbl&gt;,
+## #   min_distance &lt;dbl&gt;, latent_ac_change &lt;chr&gt;, analysis_type &lt;chr&gt;,
+## #   cmp_type &lt;chr&gt;, feature_type &lt;chr&gt;, clarity_analysis &lt;dbl&gt;,
+## #   clarity_comparison &lt;dbl&gt;, median_clarity_analysis &lt;dbl&gt;,
+## #   median_clarity_comparison &lt;dbl&gt;, correspondence &lt;chr&gt;,
+## #   clarity_corresponding &lt;dbl&gt;</code></pre>
+<pre class="r"><code>m020006_ac %&gt;% filter(examiner_anonymized == &quot;EA1526&quot;)</code></pre>
+<pre><code>## # A tibble: 19 × 22
+##    pair_id examiner_anonymized mating latent_value_analy… comparison_determinat…
+##    &lt;chr&gt;   &lt;chr&gt;               &lt;chr&gt;  &lt;chr&gt;               &lt;chr&gt;                 
+##  1 M020006 EA1526              Mates  VALUE               Excl                  
+##  2 M020006 EA1526              Mates  VALUE               Excl                  
+##  3 M020006 EA1526              Mates  VALUE               Excl                  
+##  4 M020006 EA1526              Mates  VALUE               Excl                  
+##  5 M020006 EA1526              Mates  VALUE               Excl                  
+##  6 M020006 EA1526              Mates  VALUE               Excl                  
+##  7 M020006 EA1526              Mates  VALUE               Excl                  
+##  8 M020006 EA1526              Mates  VALUE               Excl                  
+##  9 M020006 EA1526              Mates  VALUE               Excl                  
+## 10 M020006 EA1526              Mates  VALUE               Excl                  
+## 11 M020006 EA1526              Mates  VALUE               Excl                  
+## 12 M020006 EA1526              Mates  VALUE               Excl                  
+## 13 M020006 EA1526              Mates  VALUE               Excl                  
+## 14 M020006 EA1526              Mates  VALUE               Excl                  
+## 15 M020006 EA1526              Mates  VALUE               Excl                  
+## 16 M020006 EA1526              Mates  VALUE               Excl                  
+## 17 M020006 EA1526              Mates  VALUE               Excl                  
+## 18 M020006 EA1526              Mates  VALUE               Excl                  
+## 19 M020006 EA1526              Mates  VALUE               Excl                  
+## # … with 17 more variables: detailed_outcome &lt;chr&gt;, difficulty &lt;chr&gt;,
+## #   x_analysis &lt;dbl&gt;, y_analysis &lt;dbl&gt;, x_comparison &lt;dbl&gt;, y_comparison &lt;dbl&gt;,
+## #   min_distance &lt;dbl&gt;, latent_ac_change &lt;chr&gt;, analysis_type &lt;chr&gt;,
+## #   cmp_type &lt;chr&gt;, feature_type &lt;chr&gt;, clarity_analysis &lt;dbl&gt;,
+## #   clarity_comparison &lt;dbl&gt;, median_clarity_analysis &lt;dbl&gt;,
+## #   median_clarity_comparison &lt;dbl&gt;, correspondence &lt;chr&gt;,
+## #   clarity_corresponding &lt;dbl&gt;</code></pre>
+<pre class="r"><code>m020006_ac %&gt;% filter(examiner_anonymized == &quot;EA1604&quot;)</code></pre>
+<pre><code>## # A tibble: 9 × 22
+##   pair_id examiner_anonymized mating latent_value_analys… comparison_determinat…
+##   &lt;chr&gt;   &lt;chr&gt;               &lt;chr&gt;  &lt;chr&gt;                &lt;chr&gt;                 
+## 1 M020006 EA1604              Mates  VALUE                Indiv                 
+## 2 M020006 EA1604              Mates  VALUE                Indiv                 
+## 3 M020006 EA1604              Mates  VALUE                Indiv                 
+## 4 M020006 EA1604              Mates  VALUE                Indiv                 
+## 5 M020006 EA1604              Mates  VALUE                Indiv                 
+## 6 M020006 EA1604              Mates  VALUE                Indiv                 
+## 7 M020006 EA1604              Mates  VALUE                Indiv                 
+## 8 M020006 EA1604              Mates  VALUE                Indiv                 
+## 9 M020006 EA1604              Mates  VALUE                Indiv                 
+## # … with 17 more variables: detailed_outcome &lt;chr&gt;, difficulty &lt;chr&gt;,
+## #   x_analysis &lt;dbl&gt;, y_analysis &lt;dbl&gt;, x_comparison &lt;dbl&gt;, y_comparison &lt;dbl&gt;,
+## #   min_distance &lt;dbl&gt;, latent_ac_change &lt;chr&gt;, analysis_type &lt;chr&gt;,
+## #   cmp_type &lt;chr&gt;, feature_type &lt;chr&gt;, clarity_analysis &lt;dbl&gt;,
+## #   clarity_comparison &lt;dbl&gt;, median_clarity_analysis &lt;dbl&gt;,
+## #   median_clarity_comparison &lt;dbl&gt;, correspondence &lt;chr&gt;,
+## #   clarity_corresponding &lt;dbl&gt;</code></pre>
+<pre class="r"><code>m020006_ac %&gt;% filter(examiner_anonymized == &quot;EA1660&quot;)</code></pre>
+<pre><code>## # A tibble: 21 × 22
+##    pair_id examiner_anonymized mating latent_value_analy… comparison_determinat…
+##    &lt;chr&gt;   &lt;chr&gt;               &lt;chr&gt;  &lt;chr&gt;               &lt;chr&gt;                 
+##  1 M020006 EA1660              Mates  VALUE               Indiv                 
+##  2 M020006 EA1660              Mates  VALUE               Indiv                 
+##  3 M020006 EA1660              Mates  VALUE               Indiv                 
+##  4 M020006 EA1660              Mates  VALUE               Indiv                 
+##  5 M020006 EA1660              Mates  VALUE               Indiv                 
+##  6 M020006 EA1660              Mates  VALUE               Indiv                 
+##  7 M020006 EA1660              Mates  VALUE               Indiv                 
+##  8 M020006 EA1660              Mates  VALUE               Indiv                 
+##  9 M020006 EA1660              Mates  VALUE               Indiv                 
+## 10 M020006 EA1660              Mates  VALUE               Indiv                 
+## # … with 11 more rows, and 17 more variables: detailed_outcome &lt;chr&gt;,
+## #   difficulty &lt;chr&gt;, x_analysis &lt;dbl&gt;, y_analysis &lt;dbl&gt;, x_comparison &lt;dbl&gt;,
+## #   y_comparison &lt;dbl&gt;, min_distance &lt;dbl&gt;, latent_ac_change &lt;chr&gt;,
+## #   analysis_type &lt;chr&gt;, cmp_type &lt;chr&gt;, feature_type &lt;chr&gt;,
+## #   clarity_analysis &lt;dbl&gt;, clarity_comparison &lt;dbl&gt;,
+## #   median_clarity_analysis &lt;dbl&gt;, median_clarity_comparison &lt;dbl&gt;,
+## #   correspondence &lt;chr&gt;, clarity_corresponding &lt;dbl&gt;</code></pre>
+<pre class="r"><code>m020006_ac %&gt;% filter(examiner_anonymized == &quot;EA1666&quot;)</code></pre>
+<pre><code>## # A tibble: 14 × 22
+##    pair_id examiner_anonymized mating latent_value_analy… comparison_determinat…
+##    &lt;chr&gt;   &lt;chr&gt;               &lt;chr&gt;  &lt;chr&gt;               &lt;chr&gt;                 
+##  1 M020006 EA1666              Mates  VALUE               Indiv                 
+##  2 M020006 EA1666              Mates  VALUE               Indiv                 
+##  3 M020006 EA1666              Mates  VALUE               Indiv                 
+##  4 M020006 EA1666              Mates  VALUE               Indiv                 
+##  5 M020006 EA1666              Mates  VALUE               Indiv                 
+##  6 M020006 EA1666              Mates  VALUE               Indiv                 
+##  7 M020006 EA1666              Mates  VALUE               Indiv                 
+##  8 M020006 EA1666              Mates  VALUE               Indiv                 
+##  9 M020006 EA1666              Mates  VALUE               Indiv                 
+## 10 M020006 EA1666              Mates  VALUE               Indiv                 
+## 11 M020006 EA1666              Mates  VALUE               Indiv                 
+## 12 M020006 EA1666              Mates  VALUE               Indiv                 
+## 13 M020006 EA1666              Mates  VALUE               Indiv                 
+## 14 M020006 EA1666              Mates  VALUE               Indiv                 
+## # … with 17 more variables: detailed_outcome &lt;chr&gt;, difficulty &lt;chr&gt;,
+## #   x_analysis &lt;dbl&gt;, y_analysis &lt;dbl&gt;, x_comparison &lt;dbl&gt;, y_comparison &lt;dbl&gt;,
+## #   min_distance &lt;dbl&gt;, latent_ac_change &lt;chr&gt;, analysis_type &lt;chr&gt;,
+## #   cmp_type &lt;chr&gt;, feature_type &lt;chr&gt;, clarity_analysis &lt;dbl&gt;,
+## #   clarity_comparison &lt;dbl&gt;, median_clarity_analysis &lt;dbl&gt;,
+## #   median_clarity_comparison &lt;dbl&gt;, correspondence &lt;chr&gt;,
+## #   clarity_corresponding &lt;dbl&gt;</code></pre>
+<pre class="r"><code>m020006_ac %&gt;% filter(examiner_anonymized == &quot;EA1697&quot;)</code></pre>
+<pre><code>## # A tibble: 18 × 22
+##    pair_id examiner_anonymized mating latent_value_analy… comparison_determinat…
+##    &lt;chr&gt;   &lt;chr&gt;               &lt;chr&gt;  &lt;chr&gt;               &lt;chr&gt;                 
+##  1 M020006 EA1697              Mates  VEO                 Indiv                 
+##  2 M020006 EA1697              Mates  VEO                 Indiv                 
+##  3 M020006 EA1697              Mates  VEO                 Indiv                 
+##  4 M020006 EA1697              Mates  VEO                 Indiv                 
+##  5 M020006 EA1697              Mates  VEO                 Indiv                 
+##  6 M020006 EA1697              Mates  VEO                 Indiv                 
+##  7 M020006 EA1697              Mates  VEO                 Indiv                 
+##  8 M020006 EA1697              Mates  VEO                 Indiv                 
+##  9 M020006 EA1697              Mates  VEO                 Indiv                 
+## 10 M020006 EA1697              Mates  VEO                 Indiv                 
+## 11 M020006 EA1697              Mates  VEO                 Indiv                 
+## 12 M020006 EA1697              Mates  VEO                 Indiv                 
+## 13 M020006 EA1697              Mates  VEO                 Indiv                 
+## 14 M020006 EA1697              Mates  VEO                 Indiv                 
+## 15 M020006 EA1697              Mates  VEO                 Indiv                 
+## 16 M020006 EA1697              Mates  VEO                 Indiv                 
+## 17 M020006 EA1697              Mates  VEO                 Indiv                 
+## 18 M020006 EA1697              Mates  VEO                 Indiv                 
+## # … with 17 more variables: detailed_outcome &lt;chr&gt;, difficulty &lt;chr&gt;,
+## #   x_analysis &lt;dbl&gt;, y_analysis &lt;dbl&gt;, x_comparison &lt;dbl&gt;, y_comparison &lt;dbl&gt;,
+## #   min_distance &lt;dbl&gt;, latent_ac_change &lt;chr&gt;, analysis_type &lt;chr&gt;,
+## #   cmp_type &lt;chr&gt;, feature_type &lt;chr&gt;, clarity_analysis &lt;dbl&gt;,
+## #   clarity_comparison &lt;dbl&gt;, median_clarity_analysis &lt;dbl&gt;,
+## #   median_clarity_comparison &lt;dbl&gt;, correspondence &lt;chr&gt;,
+## #   clarity_corresponding &lt;dbl&gt;</code></pre>
+<pre class="r"><code>m020006_ac %&gt;% filter(examiner_anonymized == &quot;EA1761&quot;)</code></pre>
+<pre><code>## # A tibble: 25 × 22
+##    pair_id examiner_anonymized mating latent_value_analy… comparison_determinat…
+##    &lt;chr&gt;   &lt;chr&gt;               &lt;chr&gt;  &lt;chr&gt;               &lt;chr&gt;                 
+##  1 M020006 EA1761              Mates  VALUE               Indiv                 
+##  2 M020006 EA1761              Mates  VALUE               Indiv                 
+##  3 M020006 EA1761              Mates  VALUE               Indiv                 
+##  4 M020006 EA1761              Mates  VALUE               Indiv                 
+##  5 M020006 EA1761              Mates  VALUE               Indiv                 
+##  6 M020006 EA1761              Mates  VALUE               Indiv                 
+##  7 M020006 EA1761              Mates  VALUE               Indiv                 
+##  8 M020006 EA1761              Mates  VALUE               Indiv                 
+##  9 M020006 EA1761              Mates  VALUE               Indiv                 
+## 10 M020006 EA1761              Mates  VALUE               Indiv                 
+## # … with 15 more rows, and 17 more variables: detailed_outcome &lt;chr&gt;,
+## #   difficulty &lt;chr&gt;, x_analysis &lt;dbl&gt;, y_analysis &lt;dbl&gt;, x_comparison &lt;dbl&gt;,
+## #   y_comparison &lt;dbl&gt;, min_distance &lt;dbl&gt;, latent_ac_change &lt;chr&gt;,
+## #   analysis_type &lt;chr&gt;, cmp_type &lt;chr&gt;, feature_type &lt;chr&gt;,
+## #   clarity_analysis &lt;dbl&gt;, clarity_comparison &lt;dbl&gt;,
+## #   median_clarity_analysis &lt;dbl&gt;, median_clarity_comparison &lt;dbl&gt;,
+## #   correspondence &lt;chr&gt;, clarity_corresponding &lt;dbl&gt;</code></pre>
+<pre class="r"><code>m020006_ac %&gt;% filter(examiner_anonymized == &quot;EA1815&quot;)</code></pre>
+<pre><code>## # A tibble: 14 × 22
+##    pair_id examiner_anonymized mating latent_value_analy… comparison_determinat…
+##    &lt;chr&gt;   &lt;chr&gt;               &lt;chr&gt;  &lt;chr&gt;               &lt;chr&gt;                 
+##  1 M020006 EA1815              Mates  VALUE               Inconc                
+##  2 M020006 EA1815              Mates  VALUE               Inconc                
+##  3 M020006 EA1815              Mates  VALUE               Inconc                
+##  4 M020006 EA1815              Mates  VALUE               Inconc                
+##  5 M020006 EA1815              Mates  VALUE               Inconc                
+##  6 M020006 EA1815              Mates  VALUE               Inconc                
+##  7 M020006 EA1815              Mates  VALUE               Inconc                
+##  8 M020006 EA1815              Mates  VALUE               Inconc                
+##  9 M020006 EA1815              Mates  VALUE               Inconc                
+## 10 M020006 EA1815              Mates  VALUE               Inconc                
+## 11 M020006 EA1815              Mates  VALUE               Inconc                
+## 12 M020006 EA1815              Mates  VALUE               Inconc                
+## 13 M020006 EA1815              Mates  VALUE               Inconc                
+## 14 M020006 EA1815              Mates  VALUE               Inconc                
+## # … with 17 more variables: detailed_outcome &lt;chr&gt;, difficulty &lt;chr&gt;,
+## #   x_analysis &lt;dbl&gt;, y_analysis &lt;dbl&gt;, x_comparison &lt;dbl&gt;, y_comparison &lt;dbl&gt;,
+## #   min_distance &lt;dbl&gt;, latent_ac_change &lt;chr&gt;, analysis_type &lt;chr&gt;,
+## #   cmp_type &lt;chr&gt;, feature_type &lt;chr&gt;, clarity_analysis &lt;dbl&gt;,
+## #   clarity_comparison &lt;dbl&gt;, median_clarity_analysis &lt;dbl&gt;,
+## #   median_clarity_comparison &lt;dbl&gt;, correspondence &lt;chr&gt;,
+## #   clarity_corresponding &lt;dbl&gt;</code></pre>
+<pre class="r"><code>m020006_ac %&gt;% filter(examiner_anonymized == &quot;EA1817&quot;)</code></pre>
+<pre><code>## # A tibble: 23 × 22
+##    pair_id examiner_anonymized mating latent_value_analy… comparison_determinat…
+##    &lt;chr&gt;   &lt;chr&gt;               &lt;chr&gt;  &lt;chr&gt;               &lt;chr&gt;                 
+##  1 M020006 EA1817              Mates  VALUE               Indiv                 
+##  2 M020006 EA1817              Mates  VALUE               Indiv                 
+##  3 M020006 EA1817              Mates  VALUE               Indiv                 
+##  4 M020006 EA1817              Mates  VALUE               Indiv                 
+##  5 M020006 EA1817              Mates  VALUE               Indiv                 
+##  6 M020006 EA1817              Mates  VALUE               Indiv                 
+##  7 M020006 EA1817              Mates  VALUE               Indiv                 
+##  8 M020006 EA1817              Mates  VALUE               Indiv                 
+##  9 M020006 EA1817              Mates  VALUE               Indiv                 
+## 10 M020006 EA1817              Mates  VALUE               Indiv                 
+## # … with 13 more rows, and 17 more variables: detailed_outcome &lt;chr&gt;,
+## #   difficulty &lt;chr&gt;, x_analysis &lt;dbl&gt;, y_analysis &lt;dbl&gt;, x_comparison &lt;dbl&gt;,
+## #   y_comparison &lt;dbl&gt;, min_distance &lt;dbl&gt;, latent_ac_change &lt;chr&gt;,
+## #   analysis_type &lt;chr&gt;, cmp_type &lt;chr&gt;, feature_type &lt;chr&gt;,
+## #   clarity_analysis &lt;dbl&gt;, clarity_comparison &lt;dbl&gt;,
+## #   median_clarity_analysis &lt;dbl&gt;, median_clarity_comparison &lt;dbl&gt;,
+## #   correspondence &lt;chr&gt;, clarity_corresponding &lt;dbl&gt;</code></pre>
+<pre class="r"><code>ea1338 &lt;- wb_analysiscomparison %&gt;% filter(examiner_anonymized == &quot;EA1338&quot;)
+
+ggplot(data = ea1338) +
+  geom_hex(aes(x = x_analysis, y = y_analysis, alpha = log(..count..)),
+           bins = 20, fill = &quot;#000000&quot;) +
+  geom_point(aes(x = x_analysis, y = y_analysis)) +
+  geom_point(aes(x = x_comparison, y = y_comparison)) +
+  geom_segment(aes(x = x_analysis, y = y_analysis, xend = x_comparison,
+                   yend = y_comparison), alpha = 0.5) +
+  my_theme +
+  theme(axis.text.x = element_text(angle = 45)) +
+  facet_wrap(vars(pair_id), scales = &quot;free&quot;) +
+  scale_color_grey() +
+  labs(title = &quot;Examiner EA1338&quot;,
+       x = &quot;x&quot;, y = &quot;y&quot;)</code></pre>
+<pre><code>## Warning: Removed 11 rows containing non-finite values (stat_binhex).</code></pre>
+<pre><code>## Warning: Removed 11 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 11 rows containing missing values (geom_segment).</code></pre>
+<p><img src="wb_ac_files/figure-html/unnamed-chunk-77-1.png" width="672" /></p>
+<pre class="r"><code>ea1365 &lt;- wb_analysiscomparison %&gt;% filter(examiner_anonymized == &quot;EA1365&quot;)
+
+ggplot(data = ea1365) +
+  geom_hex(aes(x = x_analysis, y = y_analysis, alpha = log(..count..)),
+           bins = 20, fill = &quot;#000000&quot;) +
+  geom_point(aes(x = x_analysis, y = y_analysis)) +
+  geom_point(aes(x = x_comparison, y = y_comparison)) +
+  geom_segment(aes(x = x_analysis, y = y_analysis, xend = x_comparison,
+                   yend = y_comparison), alpha = 0.5) +
+  my_theme +
+  facet_wrap(vars(pair_id), scales = &quot;free&quot;) +
+  scale_color_grey() +
+  labs(title = &quot;Examiner EA1365&quot;,
+       x = &quot;x&quot;, y = &quot;y&quot;)</code></pre>
+<pre><code>## Warning: Removed 10 rows containing non-finite values (stat_binhex).</code></pre>
+<pre><code>## Warning: Removed 10 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 11 rows containing missing values (geom_segment).</code></pre>
+<p><img src="wb_ac_files/figure-html/unnamed-chunk-78-1.png" width="672" /></p>
+<pre class="r"><code>ea1424 &lt;- wb_analysiscomparison %&gt;% filter(examiner_anonymized == &quot;EA1424&quot;)
+
+ggplot(data = ea1424) +
+  geom_hex(aes(x = x_analysis, y = y_analysis, alpha = log(..count..)),
+           bins = 20, fill = &quot;#000000&quot;) +
+  geom_point(aes(x = x_analysis, y = y_analysis)) +
+  geom_point(aes(x = x_comparison, y = y_comparison)) +
+  geom_segment(aes(x = x_analysis, y = y_analysis, xend = x_comparison,
+                   yend = y_comparison), alpha = 0.5) +
+  my_theme +
+  facet_wrap(vars(pair_id), scales = &quot;free&quot;) +
+  scale_color_grey() +
+  labs(title = &quot;Examiner EA1424&quot;,
+       x = &quot;x&quot;, y = &quot;y&quot;)</code></pre>
+<pre><code>## Warning: Removed 3 rows containing non-finite values (stat_binhex).</code></pre>
+<pre><code>## Warning: Removed 3 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 6 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 9 rows containing missing values (geom_segment).</code></pre>
+<p><img src="wb_ac_files/figure-html/unnamed-chunk-79-1.png" width="672" /></p>
+<pre class="r"><code>ea1474 &lt;- wb_analysiscomparison %&gt;% filter(examiner_anonymized == &quot;EA1474&quot;)
+
+ggplot(data = ea1474) +
+  geom_hex(aes(x = x_analysis, y = y_analysis, alpha = log(..count..)),
+           bins = 20, fill = &quot;#000000&quot;) +
+  geom_point(aes(x = x_analysis, y = y_analysis)) +
+  geom_point(aes(x = x_comparison, y = y_comparison)) +
+  geom_segment(aes(x = x_analysis, y = y_analysis, xend = x_comparison,
+                   yend = y_comparison), alpha = 0.5) +
+  my_theme +
+  theme(axis.text.x = element_text(angle = 45)) +
+  facet_wrap(vars(pair_id), scales = &quot;free&quot;) +
+  scale_color_grey() +
+  labs(title = &quot;Examiner EA1474&quot;,
+       x = &quot;x&quot;, y = &quot;y&quot;)</code></pre>
+<pre><code>## Warning: Removed 3 rows containing non-finite values (stat_binhex).</code></pre>
+<pre><code>## Warning: Removed 3 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 4 rows containing missing values (geom_segment).</code></pre>
+<p><img src="wb_ac_files/figure-html/unnamed-chunk-80-1.png" width="672" /></p>
+<pre class="r"><code>ea1480 &lt;- wb_analysiscomparison %&gt;% filter(examiner_anonymized == &quot;EA1480&quot;)
+
+ggplot(data = ea1480) +
+  geom_hex(aes(x = x_analysis, y = y_analysis, alpha = log(..count..)),
+           bins = 20, fill = &quot;#000000&quot;) +
+  geom_point(aes(x = x_analysis, y = y_analysis)) +
+  geom_point(aes(x = x_comparison, y = y_comparison)) +
+  geom_segment(aes(x = x_analysis, y = y_analysis, xend = x_comparison,
+                   yend = y_comparison), alpha = 0.5) +
+  my_theme +
+  theme(axis.text.x = element_text(angle = 45)) +
+  facet_wrap(vars(pair_id), scales = &quot;free&quot;) +
+  scale_color_grey() +
+  labs(title = &quot;Examiner EA1480&quot;,
+       x = &quot;x&quot;, y = &quot;y&quot;)</code></pre>
+<pre><code>## Warning: Removed 8 rows containing non-finite values (stat_binhex).</code></pre>
+<pre><code>## Warning: Removed 8 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 8 rows containing missing values (geom_segment).</code></pre>
+<p><img src="wb_ac_files/figure-html/unnamed-chunk-81-1.png" width="672" /></p>
+<pre class="r"><code>ea1567 &lt;- wb_analysiscomparison %&gt;% filter(examiner_anonymized == &quot;EA1567&quot;)
+
+ggplot(data = ea1567) +
+  geom_hex(aes(x = x_analysis, y = y_analysis, alpha = log(..count..)),
+           bins = 20, fill = &quot;#000000&quot;) +
+  geom_point(aes(x = x_analysis, y = y_analysis)) +
+  geom_point(aes(x = x_comparison, y = y_comparison)) +
+  geom_segment(aes(x = x_analysis, y = y_analysis, xend = x_comparison,
+                   yend = y_comparison), alpha = 0.5) +
+  my_theme +
+  theme(axis.text.x = element_text(angle = 45)) +
+  facet_wrap(vars(pair_id), scales = &quot;free&quot;) +
+  scale_color_grey() +
+  labs(title = &quot;Examiner EA1567&quot;,
+       x = &quot;x&quot;, y = &quot;y&quot;)</code></pre>
+<pre><code>## Warning: Removed 30 rows containing non-finite values (stat_binhex).</code></pre>
+<pre><code>## Warning: Removed 30 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 30 rows containing missing values (geom_segment).</code></pre>
+<p><img src="wb_ac_files/figure-html/unnamed-chunk-82-1.png" width="672" /></p>
+<pre class="r"><code>ea1657 &lt;- wb_analysiscomparison %&gt;% filter(examiner_anonymized == &quot;EA1657&quot;)
+
+ggplot(data = ea1657) +
+  geom_hex(aes(x = x_analysis, y = y_analysis, alpha = log(..count..)),
+           bins = 20, fill = &quot;#000000&quot;) +
+  geom_point(aes(x = x_analysis, y = y_analysis)) +
+  geom_point(aes(x = x_comparison, y = y_comparison)) +
+  geom_segment(aes(x = x_analysis, y = y_analysis, xend = x_comparison,
+                   yend = y_comparison), alpha = 0.5) +
+  my_theme +
+  theme(axis.text.x = element_text(angle = 45)) +
+  facet_wrap(vars(pair_id), scales = &quot;free&quot;) +
+  scale_color_grey() +
+  labs(title = &quot;Examiner EA1657&quot;,
+       x = &quot;x&quot;, y = &quot;y&quot;)</code></pre>
+<pre><code>## Warning: Removed 25 rows containing non-finite values (stat_binhex).</code></pre>
+<pre><code>## Warning: Removed 25 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 25 rows containing missing values (geom_segment).</code></pre>
+<p><img src="wb_ac_files/figure-html/unnamed-chunk-83-1.png" width="672" /></p>
+<p>facet examiners multiple prints</p>
 </div>
 </div>
 

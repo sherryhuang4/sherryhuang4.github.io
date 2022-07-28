@@ -86,22 +86,22 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-  <title>Summer 2021 Research: Black Box Study</title>
+  <title>Sherry Huang: Black Box Study</title>
 
   <meta property="description" itemprop="description" content="Some details about the Black Box study data set"/>
 
 
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Summer 2021 Research: Black Box Study"/>
+  <meta property="og:title" content="Sherry Huang: Black Box Study"/>
   <meta property="og:type" content="article"/>
   <meta property="og:description" content="Some details about the Black Box study data set"/>
   <meta property="og:locale" content="en_US"/>
-  <meta property="og:site_name" content="Summer 2021 Research"/>
+  <meta property="og:site_name" content="Sherry Huang"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Summer 2021 Research: Black Box Study"/>
+  <meta property="twitter:title" content="Sherry Huang: Black Box Study"/>
   <meta property="twitter:description" content="Some details about the Black Box study data set"/>
 
   <!--/radix_placeholder_meta_tags-->
@@ -455,7 +455,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   </style>
 
-  <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+  <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
   <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
   <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
   <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
@@ -2343,7 +2343,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     color: var(--hover-color, white);
   }</style>
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.8/header-attrs.js"></script>
+  <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
   <link href="site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
@@ -2371,25 +2371,13 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <header class="header header--fixed" role="banner">
 <nav class="distill-site-nav distill-site-header">
 <div class="nav-left">
-<a href="index.html" class="title">Summer 2021 Research</a>
+<a href="index.html" class="title">Sherry Huang</a>
 <input id="distill-search" class="nav-search hidden" type="text" placeholder="Search..."/>
 </div>
 <div class="nav-right">
 <a href="index.html">Home</a>
-<div class="nav-dropdown">
-<button class="nav-dropbtn">
-Data Sets
- 
-<span class="down-arrow">&#x25BE;</span>
-</button>
-<div class="nav-dropdown-content">
-<a href="black-box.html">Black Box</a>
-<a href="white-box.html">White Box</a>
-<a href="repeatability.html">Repeatability</a>
-</div>
-</div>
-<a href="blog.html">Blog</a>
-<a href="sherry.html">Sherry</a>
+<a href="blog.html">Blogs</a>
+<a href="sherry.html">About Me</a>
 <a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
 </div>
 </nav>
@@ -2408,9 +2396,21 @@ Data Sets
 
 <div class="d-article">
 <h1 id="variables">Variables</h1>
-<p>The Black Box data set is used and discussed in the paper titled <a href="https://www.pnas.org/content/pnas/108/19/7733.full.pdf">Accuracy and reliability of forensic latent fingerprint decisions</a> by Bradford T. Ulery, et. al. The <a href="https://www.fbi.gov/services/laboratory/scientific-analysis/research-and-support/black-box-study-results">data</a> is freely available online. It contains the examiners’ answers to the proficiency test questions. <span class="math inline">\(169\)</span> examiners responded to approximately <span class="math inline">\(100\)</span> presentations each of image pairs yielding <span class="math inline">\(17,121\)</span> sets of responses. There are <span class="math inline">\(8\)</span> variables total in this data set.</p>
+<p>The Black Box data set is used and discussed in the paper titled <a
+href="https://www.pnas.org/content/pnas/108/19/7733.full.pdf">Accuracy
+and reliability of forensic latent fingerprint decisions</a> by Bradford
+T. Ulery, et. al. The <a
+href="https://www.fbi.gov/services/laboratory/scientific-analysis/research-and-support/black-box-study-results">data</a>
+is freely available online. It contains the examiners’ answers to the
+proficiency test questions. <span class="math inline">\(169\)</span>
+examiners responded to approximately <span
+class="math inline">\(100\)</span> presentations each of image pairs
+yielding <span class="math inline">\(17,121\)</span> sets of responses.
+There are <span class="math inline">\(8\)</span> variables total in this
+data set.</p>
 <ol type="1">
-<li><code>Examiner_ID</code>: unique, anonymized identifier for the examiner</li>
+<li><code>Examiner_ID</code>: unique, anonymized identifier for the
+examiner</li>
 </ol>
 <ul>
 <li>169 distinct values, ex: A5104</li>
@@ -2422,7 +2422,8 @@ Data Sets
 <li>744 distinct values, ex: N057413</li>
 </ul>
 <ol start="3" type="1">
-<li><code>Mating</code>: whether the latent and exemplar originate from the same source</li>
+<li><code>Mating</code>: whether the latent and exemplar originate from
+the same source</li>
 </ol>
 <ul>
 <li>ex: <code>Mates</code>, <code>Non-mates</code></li>
@@ -2437,29 +2438,37 @@ Data Sets
 <li><code>Compare_Value</code>: examiner’s comparison decision</li>
 </ol>
 <ul>
-<li>ex: <code>Exclusion</code>, <code>Individualization</code>, <code>Inconclusive</code>, <code>NA</code></li>
+<li>ex: <code>Exclusion</code>, <code>Individualization</code>,
+<code>Inconclusive</code>, <code>NA</code></li>
 </ul>
 <ol start="6" type="1">
-<li><code>Inconclusive_Reason</code>: examiner’s reason for inconclusive decision</li>
+<li><code>Inconclusive_Reason</code>: examiner’s reason for inconclusive
+decision</li>
 </ol>
 <ul>
-<li>ex: <code>Close</code>, <code>Insufficient</code>, <code>Overlap</code>, <code>NA</code></li>
+<li>ex: <code>Close</code>, <code>Insufficient</code>,
+<code>Overlap</code>, <code>NA</code></li>
 </ul>
 <ol start="7" type="1">
-<li><code>Exclusion_Reason</code>: examiner’s reason for exclusion decision</li>
+<li><code>Exclusion_Reason</code>: examiner’s reason for exclusion
+decision</li>
 </ol>
 <ul>
-<li>ex: <code>Minutiae</code>, <code>Pattern</code>, <code>NA</code></li>
+<li>ex: <code>Minutiae</code>, <code>Pattern</code>,
+<code>NA</code></li>
 </ul>
 <ol start="8" type="1">
-<li><code>Difficulty</code>: examiner’s rating of difficulty to make comparison decision</li>
+<li><code>Difficulty</code>: examiner’s rating of difficulty to make
+comparison decision</li>
 </ol>
 <ul>
-<li>ex: <code>A_Obvious</code>, <code>B_Easy</code>, <code>C_Medium</code>, <code>D_Difficult</code>, <code>E_VeryDifficult</code>, <code>NA</code></li>
+<li>ex: <code>A_Obvious</code>, <code>B_Easy</code>,
+<code>C_Medium</code>, <code>D_Difficult</code>,
+<code>E_VeryDifficult</code>, <code>NA</code></li>
 </ul>
 <h1 id="data-set">Data Set</h1>
 <div class="layout-chunk" data-layout="l-body">
-<pre><code># A tibble: 6 x 8
+<pre><code># A tibble: 6 × 8
   Examiner_ID Pair_ID Mating    Latent_Value Compare_Value
   &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;        
 1 A5104       N057413 Non-mates VID          Exclusion    
@@ -2471,7 +2480,8 @@ Data Sets
 # … with 3 more variables: Inconclusive_Reason &lt;chr&gt;,
 #   Exclusion_Reason &lt;chr&gt;, Difficulty &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

@@ -86,22 +86,22 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-  <title>Summer 2021 Research: Repeatability</title>
+  <title>Sherry Huang: Repeatability</title>
 
   <meta property="description" itemprop="description" content="Some details about the Test and Retest data set"/>
 
 
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Summer 2021 Research: Repeatability"/>
+  <meta property="og:title" content="Sherry Huang: Repeatability"/>
   <meta property="og:type" content="article"/>
   <meta property="og:description" content="Some details about the Test and Retest data set"/>
   <meta property="og:locale" content="en_US"/>
-  <meta property="og:site_name" content="Summer 2021 Research"/>
+  <meta property="og:site_name" content="Sherry Huang"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Summer 2021 Research: Repeatability"/>
+  <meta property="twitter:title" content="Sherry Huang: Repeatability"/>
   <meta property="twitter:description" content="Some details about the Test and Retest data set"/>
 
   <!--/radix_placeholder_meta_tags-->
@@ -455,7 +455,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   </style>
 
-  <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+  <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
   <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
   <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
   <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
@@ -2343,7 +2343,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     color: var(--hover-color, white);
   }</style>
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.8/header-attrs.js"></script>
+  <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
   <link href="site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
@@ -2371,25 +2371,13 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <header class="header header--fixed" role="banner">
 <nav class="distill-site-nav distill-site-header">
 <div class="nav-left">
-<a href="index.html" class="title">Summer 2021 Research</a>
+<a href="index.html" class="title">Sherry Huang</a>
 <input id="distill-search" class="nav-search hidden" type="text" placeholder="Search..."/>
 </div>
 <div class="nav-right">
 <a href="index.html">Home</a>
-<div class="nav-dropdown">
-<button class="nav-dropbtn">
-Data Sets
- 
-<span class="down-arrow">&#x25BE;</span>
-</button>
-<div class="nav-dropdown-content">
-<a href="black-box.html">Black Box</a>
-<a href="white-box.html">White Box</a>
-<a href="repeatability.html">Repeatability</a>
-</div>
-</div>
-<a href="blog.html">Blog</a>
-<a href="sherry.html">Sherry</a>
+<a href="blog.html">Blogs</a>
+<a href="sherry.html">About Me</a>
 <a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
 </div>
 </nav>
@@ -2407,16 +2395,48 @@ Data Sets
 
 
 <div class="d-article">
-<p>The Repeatability and Reproducibility <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3299696/">paper</a> discusses and analyzes the data set discussed here. This study looks at the repeatability and reproducibility rate of prints. <em>Repeatability</em> is defined as whether one examiner consistently reaches the same decision on the same fingerprints, and <em>reproducibility</em> is defined as whether two examiners reach the same decision on the same fingerprints. The data is stored in a text file, and the variables and data set is displayed below.</p>
+<p>The Repeatability and Reproducibility <a
+href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3299696/">paper</a>
+discusses and analyzes the data set discussed here. This study looks at
+the repeatability and reproducibility rate of prints.
+<em>Repeatability</em> is defined as whether one examiner consistently
+reaches the same decision on the same fingerprints, and
+<em>reproducibility</em> is defined as whether two examiners reach the
+same decision on the same fingerprints. The data is stored in a text
+file, and the variables and data set is displayed below.</p>
 <h1 id="variables">Variables</h1>
 <ol type="1">
-<li><code>Dataset</code>: When picking prints for the user, each examiner receives <span class="math inline">\(25\)</span> pairs to examine. Within these <span class="math inline">\(25\)</span> pairs, <span class="math inline">\(9\)</span> were non-mated image pairs and <span class="math inline">\(16\)</span> were image pairs. Within the non-mated image pairs, examiners who had committed a false positive error previously (in the Black Box study) were reassigned that image (<span class="math inline">\(\text{FalsePos}\)</span>), and the remaining are selected at random (<span class="math inline">\(\text{RandomNonMates}\)</span>). Within the image pairs, <span class="math inline">\(11\)</span> image pairs were selected at random out of the pairs that the examiner had not committed false negative errors (<span class="math inline">\(\text{RandomMates}\)</span>), up to <span class="math inline">\(5\)</span> image pairs where the examiners had committed false negative errors (<span class="math inline">\(\text{FalseNeg}\)</span>), and the remaining pairs are randomly selected out of the pairs where the examiner also did not commit false negative errors (<span class="math inline">\(\text{ExtraMates}\)</span>).</li>
+<li><code>Dataset</code>: When picking prints for the user, each
+examiner receives <span class="math inline">\(25\)</span> pairs to
+examine. Within these <span class="math inline">\(25\)</span> pairs,
+<span class="math inline">\(9\)</span> were non-mated image pairs and
+<span class="math inline">\(16\)</span> were image pairs. Within the
+non-mated image pairs, examiners who had committed a false positive
+error previously (in the Black Box study) were reassigned that image
+(<span class="math inline">\(\text{FalsePos}\)</span>), and the
+remaining are selected at random (<span
+class="math inline">\(\text{RandomNonMates}\)</span>). Within the image
+pairs, <span class="math inline">\(11\)</span> image pairs were selected
+at random out of the pairs that the examiner had not committed false
+negative errors (<span
+class="math inline">\(\text{RandomMates}\)</span>), up to <span
+class="math inline">\(5\)</span> image pairs where the examiners had
+committed false negative errors (<span
+class="math inline">\(\text{FalseNeg}\)</span>), and the remaining pairs
+are randomly selected out of the pairs where the examiner also did not
+commit false negative errors (<span
+class="math inline">\(\text{ExtraMates}\)</span>).</li>
 </ol>
 <ul>
-<li>ex: <span class="math inline">\(\text{RandomMates}\)</span>, <span class="math inline">\(\text{FalseNeg}\)</span>, <span class="math inline">\(\text{ExtraMates}\)</span>, <span class="math inline">\(\text{RandomNonMates}\)</span>, <span class="math inline">\(\text{FalsePos}\)</span></li>
+<li>ex: <span class="math inline">\(\text{RandomMates}\)</span>, <span
+class="math inline">\(\text{FalseNeg}\)</span>, <span
+class="math inline">\(\text{ExtraMates}\)</span>, <span
+class="math inline">\(\text{RandomNonMates}\)</span>, <span
+class="math inline">\(\text{FalsePos}\)</span></li>
 </ul>
 <ol start="2" type="1">
-<li><code>Examiner_ID</code>: unique, anonymized identifier for the examiner</li>
+<li><code>Examiner_ID</code>: unique, anonymized identifier for the
+examiner</li>
 </ol>
 <ul>
 <li>ex: <span class="math inline">\(A2002\)</span></li>
@@ -2434,22 +2454,26 @@ Data Sets
 <li>ex: <span class="math inline">\(\text{L_003}\)</span></li>
 </ul>
 <ol start="5" type="1">
-<li><code>Exemplar_ID</code>: unique identifier for the exemplar print</li>
+<li><code>Exemplar_ID</code>: unique identifier for the exemplar
+print</li>
 </ol>
 <ul>
 <li>ex: <span class="math inline">\(\text{E_061}\)</span></li>
 </ul>
 <ol start="6" type="1">
-<li><code>Mating</code>: whether the latent and exemplar originate from the same source</li>
+<li><code>Mating</code>: whether the latent and exemplar originate from
+the same source</li>
 </ol>
 <ul>
-<li>ex: <span class="math inline">\(\text{Mates}\)</span>, <span class="math inline">\(\text{Non-mates}\)</span></li>
+<li>ex: <span class="math inline">\(\text{Mates}\)</span>, <span
+class="math inline">\(\text{Non-mates}\)</span></li>
 </ul>
 <ol start="7" type="1">
 <li><code>LatentRetest</code>:</li>
 </ol>
 <ul>
-<li>ex: <span class="math inline">\(\text{LatentRetest}\)</span>, <span class="math inline">\(\text{Ignore}\)</span></li>
+<li>ex: <span class="math inline">\(\text{LatentRetest}\)</span>, <span
+class="math inline">\(\text{Ignore}\)</span></li>
 </ul>
 <ol start="8" type="1">
 <li><code>LV_Initial</code>: initial latent print value</li>
@@ -2467,49 +2491,71 @@ Data Sets
 <li><code>Comp_Initial</code>: initial comparison determination</li>
 </ol>
 <ul>
-<li>ex: <span class="math inline">\(\text{Inconclusive}\)</span>, <span class="math inline">\(\text{Individualization}\)</span>, <span class="math inline">\(\text{Exclusion}\)</span>, <span class="math inline">\(\text{Latent No Value}\)</span></li>
+<li>ex: <span class="math inline">\(\text{Inconclusive}\)</span>, <span
+class="math inline">\(\text{Individualization}\)</span>, <span
+class="math inline">\(\text{Exclusion}\)</span>, <span
+class="math inline">\(\text{Latent No Value}\)</span></li>
 </ul>
 <ol start="11" type="1">
 <li><code>Comp_Retest</code>: retest comparison determination</li>
 </ol>
 <ul>
-<li>ex: <span class="math inline">\(\text{Inconclusive}\)</span>, <span class="math inline">\(\text{Individualization}\)</span>, <span class="math inline">\(\text{Exclusion}\)</span>, <span class="math inline">\(\text{Latent No Value}\)</span></li>
+<li>ex: <span class="math inline">\(\text{Inconclusive}\)</span>, <span
+class="math inline">\(\text{Individualization}\)</span>, <span
+class="math inline">\(\text{Exclusion}\)</span>, <span
+class="math inline">\(\text{Latent No Value}\)</span></li>
 </ul>
 <ol start="12" type="1">
 <li><code>Excl_Initial</code>: initial exclusion reason</li>
 </ol>
 <ul>
-<li>ex: <span class="math inline">\(\text{MIN}\)</span>, <span class="math inline">\(\text{PAT}\)</span>, <code>NA</code></li>
+<li>ex: <span class="math inline">\(\text{MIN}\)</span>, <span
+class="math inline">\(\text{PAT}\)</span>, <code>NA</code></li>
 </ul>
 <ol start="13" type="1">
 <li><code>Excl_Retest</code>: retest exclusion reason</li>
 </ol>
 <ul>
-<li>ex: <span class="math inline">\(\text{MIN}\)</span>, <span class="math inline">\(\text{PAT}\)</span>, <code>NA</code></li>
+<li>ex: <span class="math inline">\(\text{MIN}\)</span>, <span
+class="math inline">\(\text{PAT}\)</span>, <code>NA</code></li>
 </ul>
 <ol start="14" type="1">
 <li><code>Inconc_Initial</code>: initial inconclusive reason</li>
 </ol>
 <ul>
-<li>ex: <span class="math inline">\(\text{Close}\)</span>, <span class="math inline">\(\text{Overlap}\)</span>, <span class="math inline">\(\text{Insufficient}\)</span>, <code>NA</code></li>
+<li>ex: <span class="math inline">\(\text{Close}\)</span>, <span
+class="math inline">\(\text{Overlap}\)</span>, <span
+class="math inline">\(\text{Insufficient}\)</span>, <code>NA</code></li>
 </ul>
 <ol start="15" type="1">
 <li><code>Inconc_Retest</code>: retest inconclusive reason</li>
 </ol>
 <ul>
-<li>ex: <span class="math inline">\(\text{Close}\)</span>, <span class="math inline">\(\text{Overlap}\)</span>, <span class="math inline">\(\text{Insufficient}\)</span>, <code>NA</code></li>
+<li>ex: <span class="math inline">\(\text{Close}\)</span>, <span
+class="math inline">\(\text{Overlap}\)</span>, <span
+class="math inline">\(\text{Insufficient}\)</span>, <code>NA</code></li>
 </ul>
 <ol start="16" type="1">
 <li><code>Difficulty_Initial</code>: initial difficulty rating</li>
 </ol>
 <ul>
-<li>ex: <span class="math inline">\(\text{A_Obvious}\)</span>, <span class="math inline">\(\text{B_Easy}\)</span>, <span class="math inline">\(\text{C_Medium}\)</span>, <span class="math inline">\(\text{D_Difficult}\)</span>, <span class="math inline">\(\text{E_VeryDifficult}\)</span>, <code>NA</code></li>
+<li>ex: <span class="math inline">\(\text{A_Obvious}\)</span>, <span
+class="math inline">\(\text{B_Easy}\)</span>, <span
+class="math inline">\(\text{C_Medium}\)</span>, <span
+class="math inline">\(\text{D_Difficult}\)</span>, <span
+class="math inline">\(\text{E_VeryDifficult}\)</span>,
+<code>NA</code></li>
 </ul>
 <ol start="17" type="1">
 <li><code>Difficulty_Retest</code>: retest difficulty rating</li>
 </ol>
 <ul>
-<li>ex: <span class="math inline">\(\text{A_Obvious}\)</span>, <span class="math inline">\(\text{B_Easy}\)</span>, <span class="math inline">\(\text{C_Medium}\)</span>, <span class="math inline">\(\text{D_Difficult}\)</span>, <span class="math inline">\(\text{E_VeryDifficult}\)</span>, <code>NA</code></li>
+<li>ex: <span class="math inline">\(\text{A_Obvious}\)</span>, <span
+class="math inline">\(\text{B_Easy}\)</span>, <span
+class="math inline">\(\text{C_Medium}\)</span>, <span
+class="math inline">\(\text{D_Difficult}\)</span>, <span
+class="math inline">\(\text{E_VeryDifficult}\)</span>,
+<code>NA</code></li>
 </ul>
 <h1 id="data-set">Data Set</h1>
 <div class="layout-chunk" data-layout="l-body">
@@ -2546,7 +2592,8 @@ Data Sets
 5          &lt;NA&gt;             B_Easy            B_Easy
 6          &lt;NA&gt;             B_Easy            B_Easy</code></pre>
 </div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
