@@ -50,16 +50,17 @@ pre.numberSource code > span > a:first-child::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {   }
+  { color: #00769e; background-color: #f1f3f5; }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
+code span { color: #00769e; } /* Normal */
 code span.al { color: #ad0000; } /* Alert */
 code span.an { color: #5e5e5e; } /* Annotation */
-code span.at { color: #20794d; } /* Attribute */
+code span.at { color: #657422; } /* Attribute */
 code span.bn { color: #ad0000; } /* BaseN */
 code span.bu { } /* BuiltIn */
-code span.cf { color: #007ba5; } /* ControlFlow */
+code span.cf { color: #00769e; } /* ControlFlow */
 code span.ch { color: #20794d; } /* Char */
 code span.cn { color: #8f5902; } /* Constant */
 code span.co { color: #5e5e5e; } /* Comment */
@@ -73,17 +74,18 @@ code span.fl { color: #ad0000; } /* Float */
 code span.fu { color: #4758ab; } /* Function */
 code span.im { } /* Import */
 code span.in { color: #5e5e5e; } /* Information */
-code span.kw { color: #007ba5; } /* Keyword */
+code span.kw { color: #00769e; } /* Keyword */
 code span.op { color: #5e5e5e; } /* Operator */
-code span.ot { color: #007ba5; } /* Other */
+code span.ot { color: #00769e; } /* Other */
 code span.pp { color: #ad0000; } /* Preprocessor */
-code span.sc { color: #20794d; } /* SpecialChar */
+code span.sc { color: #5e5e5e; } /* SpecialChar */
 code span.ss { color: #20794d; } /* SpecialString */
 code span.st { color: #20794d; } /* String */
 code span.va { color: #111111; } /* Variable */
 code span.vs { color: #20794d; } /* VerbatimString */
 code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
+
 
   <!--radix_placeholder_meta_tags-->
   <title>Sherry Huang: Repeatability</title>
@@ -786,6 +788,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   d-article table.gt_table td,
   d-article table.gt_table th {
     border-bottom: none;
+    font-size: 100%;
   }
 
   .html-widget {
@@ -1027,10 +1030,6 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     position: relative;
     margin-bottom: 2.5em;
     margin-top: 1.5em;
-  }
-
-  .figure img {
-    width: 100%;
   }
 
   .figure .caption {
@@ -1862,7 +1861,22 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
       // hoverable references
       $('span.citation[data-cites]').each(function() {
-        var refHtml = $('#ref-' + $(this).attr('data-cites')).html();
+        const citeChild = $(this).children()[0]
+        // Do not process if @xyz has been used without escaping and without bibliography activated
+        // https://github.com/rstudio/distill/issues/466
+        if (citeChild === undefined) return true
+
+        if (citeChild.nodeName == "D-FOOTNOTE") {
+          var fn = citeChild
+          $(this).html(fn.shadowRoot.querySelector("sup"))
+          $(this).id = fn.id
+          fn.remove()
+        }
+        var refs = $(this).attr('data-cites').split(" ");
+        var refHtml = refs.map(function(ref) {
+          // Could use CSS.escape too here, we insure backward compatibility in navigator
+          return "<p>" + $('div[id="ref-' + ref + '"]').html() + "</p>";
+        }).join("\n");
         window.tippy(this, {
           allowHTML: true,
           content: refHtml,
@@ -1873,6 +1887,31 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
           placement: 'bottom-start'
         });
       });
+
+      // fix footnotes in tables (#411)
+      // replacing broken distill.pub feature
+      $('table d-footnote').each(function() {
+        // we replace internal showAtNode methode which is triggered when hovering a footnote
+        this.hoverBox.showAtNode = function(node) {
+          // ported from https://github.com/distillpub/template/pull/105/files
+          calcOffset = function(elem) {
+              let x = elem.offsetLeft;
+              let y = elem.offsetTop;
+              // Traverse upwards until an `absolute` element is found or `elem`
+              // becomes null.
+              while (elem = elem.offsetParent && elem.style.position != 'absolute') {
+                  x += elem.offsetLeft;
+                  y += elem.offsetTop;
+              }
+
+              return { left: x, top: y };
+          }
+          // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
+          const bbox = node.getBoundingClientRect();
+          const offset = calcOffset(node);
+          this.show([offset.left + bbox.width, offset.top + bbox.height]);
+        }
+      })
 
       // clear polling timer
       clearInterval(tid);
@@ -1972,6 +2011,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     // mark non-body figures created by knitr chunks as 100% width
     $('.layout-chunk').each(function(i, val) {
       var figures = $(this).find('img, .html-widget');
+      // ignore leaflet img layers (#106)
+      figures = figures.filter(':not(img[class*="leaflet"])')
       if ($(this).attr('data-layout') !== "l-body") {
         figures.css('width', '100%');
       } else {
@@ -1994,7 +2035,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     // get rid of index.html references in header
     if (window.location.protocol !== "file:") {
       $('.distill-site-header a[href]').each(function(i,val) {
-        $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+        $(this).attr('href', $(this).attr('href').replace(/^index[.]html/, "./"));
       });
     }
 
@@ -2343,7 +2384,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     color: var(--hover-color, white);
   }</style>
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+  <script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
   <link href="site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
@@ -2376,7 +2417,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </div>
 <div class="nav-right">
 <a href="index.html">Home</a>
-<a href="blog.html">Blogs</a>
+<a href="black-box.html">CV</a>
+<a href="blog.html">Research</a>
 <a href="sherry.html">About Me</a>
 <a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
 </div>
@@ -2395,48 +2437,16 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 
 <div class="d-article">
-<p>The Repeatability and Reproducibility <a
-href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3299696/">paper</a>
-discusses and analyzes the data set discussed here. This study looks at
-the repeatability and reproducibility rate of prints.
-<em>Repeatability</em> is defined as whether one examiner consistently
-reaches the same decision on the same fingerprints, and
-<em>reproducibility</em> is defined as whether two examiners reach the
-same decision on the same fingerprints. The data is stored in a text
-file, and the variables and data set is displayed below.</p>
+<p>The Repeatability and Reproducibility <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3299696/">paper</a> discusses and analyzes the data set discussed here. This study looks at the repeatability and reproducibility rate of prints. <em>Repeatability</em> is defined as whether one examiner consistently reaches the same decision on the same fingerprints, and <em>reproducibility</em> is defined as whether two examiners reach the same decision on the same fingerprints. The data is stored in a text file, and the variables and data set is displayed below.</p>
 <h1 id="variables">Variables</h1>
 <ol type="1">
-<li><code>Dataset</code>: When picking prints for the user, each
-examiner receives <span class="math inline">\(25\)</span> pairs to
-examine. Within these <span class="math inline">\(25\)</span> pairs,
-<span class="math inline">\(9\)</span> were non-mated image pairs and
-<span class="math inline">\(16\)</span> were image pairs. Within the
-non-mated image pairs, examiners who had committed a false positive
-error previously (in the Black Box study) were reassigned that image
-(<span class="math inline">\(\text{FalsePos}\)</span>), and the
-remaining are selected at random (<span
-class="math inline">\(\text{RandomNonMates}\)</span>). Within the image
-pairs, <span class="math inline">\(11\)</span> image pairs were selected
-at random out of the pairs that the examiner had not committed false
-negative errors (<span
-class="math inline">\(\text{RandomMates}\)</span>), up to <span
-class="math inline">\(5\)</span> image pairs where the examiners had
-committed false negative errors (<span
-class="math inline">\(\text{FalseNeg}\)</span>), and the remaining pairs
-are randomly selected out of the pairs where the examiner also did not
-commit false negative errors (<span
-class="math inline">\(\text{ExtraMates}\)</span>).</li>
+<li><code>Dataset</code>: When picking prints for the user, each examiner receives <span class="math inline">\(25\)</span> pairs to examine. Within these <span class="math inline">\(25\)</span> pairs, <span class="math inline">\(9\)</span> were non-mated image pairs and <span class="math inline">\(16\)</span> were image pairs. Within the non-mated image pairs, examiners who had committed a false positive error previously (in the Black Box study) were reassigned that image (<span class="math inline">\(\text{FalsePos}\)</span>), and the remaining are selected at random (<span class="math inline">\(\text{RandomNonMates}\)</span>). Within the image pairs, <span class="math inline">\(11\)</span> image pairs were selected at random out of the pairs that the examiner had not committed false negative errors (<span class="math inline">\(\text{RandomMates}\)</span>), up to <span class="math inline">\(5\)</span> image pairs where the examiners had committed false negative errors (<span class="math inline">\(\text{FalseNeg}\)</span>), and the remaining pairs are randomly selected out of the pairs where the examiner also did not commit false negative errors (<span class="math inline">\(\text{ExtraMates}\)</span>).</li>
 </ol>
 <ul>
-<li>ex: <span class="math inline">\(\text{RandomMates}\)</span>, <span
-class="math inline">\(\text{FalseNeg}\)</span>, <span
-class="math inline">\(\text{ExtraMates}\)</span>, <span
-class="math inline">\(\text{RandomNonMates}\)</span>, <span
-class="math inline">\(\text{FalsePos}\)</span></li>
+<li>ex: <span class="math inline">\(\text{RandomMates}\)</span>, <span class="math inline">\(\text{FalseNeg}\)</span>, <span class="math inline">\(\text{ExtraMates}\)</span>, <span class="math inline">\(\text{RandomNonMates}\)</span>, <span class="math inline">\(\text{FalsePos}\)</span></li>
 </ul>
 <ol start="2" type="1">
-<li><code>Examiner_ID</code>: unique, anonymized identifier for the
-examiner</li>
+<li><code>Examiner_ID</code>: unique, anonymized identifier for the examiner</li>
 </ol>
 <ul>
 <li>ex: <span class="math inline">\(A2002\)</span></li>
@@ -2454,26 +2464,22 @@ examiner</li>
 <li>ex: <span class="math inline">\(\text{L_003}\)</span></li>
 </ul>
 <ol start="5" type="1">
-<li><code>Exemplar_ID</code>: unique identifier for the exemplar
-print</li>
+<li><code>Exemplar_ID</code>: unique identifier for the exemplar print</li>
 </ol>
 <ul>
 <li>ex: <span class="math inline">\(\text{E_061}\)</span></li>
 </ul>
 <ol start="6" type="1">
-<li><code>Mating</code>: whether the latent and exemplar originate from
-the same source</li>
+<li><code>Mating</code>: whether the latent and exemplar originate from the same source</li>
 </ol>
 <ul>
-<li>ex: <span class="math inline">\(\text{Mates}\)</span>, <span
-class="math inline">\(\text{Non-mates}\)</span></li>
+<li>ex: <span class="math inline">\(\text{Mates}\)</span>, <span class="math inline">\(\text{Non-mates}\)</span></li>
 </ul>
 <ol start="7" type="1">
 <li><code>LatentRetest</code>:</li>
 </ol>
 <ul>
-<li>ex: <span class="math inline">\(\text{LatentRetest}\)</span>, <span
-class="math inline">\(\text{Ignore}\)</span></li>
+<li>ex: <span class="math inline">\(\text{LatentRetest}\)</span>, <span class="math inline">\(\text{Ignore}\)</span></li>
 </ul>
 <ol start="8" type="1">
 <li><code>LV_Initial</code>: initial latent print value</li>
@@ -2491,77 +2497,54 @@ class="math inline">\(\text{Ignore}\)</span></li>
 <li><code>Comp_Initial</code>: initial comparison determination</li>
 </ol>
 <ul>
-<li>ex: <span class="math inline">\(\text{Inconclusive}\)</span>, <span
-class="math inline">\(\text{Individualization}\)</span>, <span
-class="math inline">\(\text{Exclusion}\)</span>, <span
-class="math inline">\(\text{Latent No Value}\)</span></li>
+<li>ex: <span class="math inline">\(\text{Inconclusive}\)</span>, <span class="math inline">\(\text{Individualization}\)</span>, <span class="math inline">\(\text{Exclusion}\)</span>, <span class="math inline">\(\text{Latent No Value}\)</span></li>
 </ul>
 <ol start="11" type="1">
 <li><code>Comp_Retest</code>: retest comparison determination</li>
 </ol>
 <ul>
-<li>ex: <span class="math inline">\(\text{Inconclusive}\)</span>, <span
-class="math inline">\(\text{Individualization}\)</span>, <span
-class="math inline">\(\text{Exclusion}\)</span>, <span
-class="math inline">\(\text{Latent No Value}\)</span></li>
+<li>ex: <span class="math inline">\(\text{Inconclusive}\)</span>, <span class="math inline">\(\text{Individualization}\)</span>, <span class="math inline">\(\text{Exclusion}\)</span>, <span class="math inline">\(\text{Latent No Value}\)</span></li>
 </ul>
 <ol start="12" type="1">
 <li><code>Excl_Initial</code>: initial exclusion reason</li>
 </ol>
 <ul>
-<li>ex: <span class="math inline">\(\text{MIN}\)</span>, <span
-class="math inline">\(\text{PAT}\)</span>, <code>NA</code></li>
+<li>ex: <span class="math inline">\(\text{MIN}\)</span>, <span class="math inline">\(\text{PAT}\)</span>, <code>NA</code></li>
 </ul>
 <ol start="13" type="1">
 <li><code>Excl_Retest</code>: retest exclusion reason</li>
 </ol>
 <ul>
-<li>ex: <span class="math inline">\(\text{MIN}\)</span>, <span
-class="math inline">\(\text{PAT}\)</span>, <code>NA</code></li>
+<li>ex: <span class="math inline">\(\text{MIN}\)</span>, <span class="math inline">\(\text{PAT}\)</span>, <code>NA</code></li>
 </ul>
 <ol start="14" type="1">
 <li><code>Inconc_Initial</code>: initial inconclusive reason</li>
 </ol>
 <ul>
-<li>ex: <span class="math inline">\(\text{Close}\)</span>, <span
-class="math inline">\(\text{Overlap}\)</span>, <span
-class="math inline">\(\text{Insufficient}\)</span>, <code>NA</code></li>
+<li>ex: <span class="math inline">\(\text{Close}\)</span>, <span class="math inline">\(\text{Overlap}\)</span>, <span class="math inline">\(\text{Insufficient}\)</span>, <code>NA</code></li>
 </ul>
 <ol start="15" type="1">
 <li><code>Inconc_Retest</code>: retest inconclusive reason</li>
 </ol>
 <ul>
-<li>ex: <span class="math inline">\(\text{Close}\)</span>, <span
-class="math inline">\(\text{Overlap}\)</span>, <span
-class="math inline">\(\text{Insufficient}\)</span>, <code>NA</code></li>
+<li>ex: <span class="math inline">\(\text{Close}\)</span>, <span class="math inline">\(\text{Overlap}\)</span>, <span class="math inline">\(\text{Insufficient}\)</span>, <code>NA</code></li>
 </ul>
 <ol start="16" type="1">
 <li><code>Difficulty_Initial</code>: initial difficulty rating</li>
 </ol>
 <ul>
-<li>ex: <span class="math inline">\(\text{A_Obvious}\)</span>, <span
-class="math inline">\(\text{B_Easy}\)</span>, <span
-class="math inline">\(\text{C_Medium}\)</span>, <span
-class="math inline">\(\text{D_Difficult}\)</span>, <span
-class="math inline">\(\text{E_VeryDifficult}\)</span>,
-<code>NA</code></li>
+<li>ex: <span class="math inline">\(\text{A_Obvious}\)</span>, <span class="math inline">\(\text{B_Easy}\)</span>, <span class="math inline">\(\text{C_Medium}\)</span>, <span class="math inline">\(\text{D_Difficult}\)</span>, <span class="math inline">\(\text{E_VeryDifficult}\)</span>, <code>NA</code></li>
 </ul>
 <ol start="17" type="1">
 <li><code>Difficulty_Retest</code>: retest difficulty rating</li>
 </ol>
 <ul>
-<li>ex: <span class="math inline">\(\text{A_Obvious}\)</span>, <span
-class="math inline">\(\text{B_Easy}\)</span>, <span
-class="math inline">\(\text{C_Medium}\)</span>, <span
-class="math inline">\(\text{D_Difficult}\)</span>, <span
-class="math inline">\(\text{E_VeryDifficult}\)</span>,
-<code>NA</code></li>
+<li>ex: <span class="math inline">\(\text{A_Obvious}\)</span>, <span class="math inline">\(\text{B_Easy}\)</span>, <span class="math inline">\(\text{C_Medium}\)</span>, <span class="math inline">\(\text{D_Difficult}\)</span>, <span class="math inline">\(\text{E_VeryDifficult}\)</span>, <code>NA</code></li>
 </ul>
 <h1 id="data-set">Data Set</h1>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>repeatability</span><span class='op'>)</span>
-</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>repeatability</span><span class='op'>)</span></span></code></pre>
 </div>
 <pre><code>      Dataset Examiner_ID Pair_ID Latent_ID Exemplar_ID Mating
 1 RandomMates       A2002 M003061     L_003       E_061  Mates
@@ -2592,8 +2575,7 @@ class="math inline">\(\text{E_VeryDifficult}\)</span>,
 5          &lt;NA&gt;             B_Easy            B_Easy
 6          &lt;NA&gt;             B_Easy            B_Easy</code></pre>
 </div>
-<div class="sourceCode" id="cb2"><pre
-class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

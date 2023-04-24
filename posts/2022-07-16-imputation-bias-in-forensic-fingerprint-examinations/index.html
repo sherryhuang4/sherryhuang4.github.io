@@ -50,16 +50,17 @@ pre.numberSource code > span > a:first-child::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {   }
+  { color: #00769e; background-color: #f1f3f5; }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
+code span { color: #00769e; } /* Normal */
 code span.al { color: #ad0000; } /* Alert */
 code span.an { color: #5e5e5e; } /* Annotation */
-code span.at { color: #20794d; } /* Attribute */
+code span.at { color: #657422; } /* Attribute */
 code span.bn { color: #ad0000; } /* BaseN */
 code span.bu { } /* BuiltIn */
-code span.cf { color: #007ba5; } /* ControlFlow */
+code span.cf { color: #00769e; } /* ControlFlow */
 code span.ch { color: #20794d; } /* Char */
 code span.cn { color: #8f5902; } /* Constant */
 code span.co { color: #5e5e5e; } /* Comment */
@@ -73,17 +74,18 @@ code span.fl { color: #ad0000; } /* Float */
 code span.fu { color: #4758ab; } /* Function */
 code span.im { } /* Import */
 code span.in { color: #5e5e5e; } /* Information */
-code span.kw { color: #007ba5; } /* Keyword */
+code span.kw { color: #00769e; } /* Keyword */
 code span.op { color: #5e5e5e; } /* Operator */
-code span.ot { color: #007ba5; } /* Other */
+code span.ot { color: #00769e; } /* Other */
 code span.pp { color: #ad0000; } /* Preprocessor */
-code span.sc { color: #20794d; } /* SpecialChar */
+code span.sc { color: #5e5e5e; } /* SpecialChar */
 code span.ss { color: #20794d; } /* SpecialString */
 code span.st { color: #20794d; } /* String */
 code span.va { color: #111111; } /* Variable */
 code span.vs { color: #20794d; } /* VerbatimString */
 code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
+
 
   <!--radix_placeholder_meta_tags-->
 <title>Sherry Huang: Imputation Bias in Forensic Fingerprint Examinations</title>
@@ -794,6 +796,7 @@ d-title .dt-tags {
 d-article table.gt_table td,
 d-article table.gt_table th {
   border-bottom: none;
+  font-size: 100%;
 }
 
 .html-widget {
@@ -1035,10 +1038,6 @@ figure img.external {
   position: relative;
   margin-bottom: 2.5em;
   margin-top: 1.5em;
-}
-
-.figure img {
-  width: 100%;
 }
 
 .figure .caption {
@@ -1870,7 +1869,22 @@ function init_distill() {
 
     // hoverable references
     $('span.citation[data-cites]').each(function() {
-      var refHtml = $('#ref-' + $(this).attr('data-cites')).html();
+      const citeChild = $(this).children()[0]
+      // Do not process if @xyz has been used without escaping and without bibliography activated
+      // https://github.com/rstudio/distill/issues/466
+      if (citeChild === undefined) return true
+
+      if (citeChild.nodeName == "D-FOOTNOTE") {
+        var fn = citeChild
+        $(this).html(fn.shadowRoot.querySelector("sup"))
+        $(this).id = fn.id
+        fn.remove()
+      }
+      var refs = $(this).attr('data-cites').split(" ");
+      var refHtml = refs.map(function(ref) {
+        // Could use CSS.escape too here, we insure backward compatibility in navigator
+        return "<p>" + $('div[id="ref-' + ref + '"]').html() + "</p>";
+      }).join("\n");
       window.tippy(this, {
         allowHTML: true,
         content: refHtml,
@@ -1881,6 +1895,31 @@ function init_distill() {
         placement: 'bottom-start'
       });
     });
+
+    // fix footnotes in tables (#411)
+    // replacing broken distill.pub feature
+    $('table d-footnote').each(function() {
+      // we replace internal showAtNode methode which is triggered when hovering a footnote
+      this.hoverBox.showAtNode = function(node) {
+        // ported from https://github.com/distillpub/template/pull/105/files
+        calcOffset = function(elem) {
+            let x = elem.offsetLeft;
+            let y = elem.offsetTop;
+            // Traverse upwards until an `absolute` element is found or `elem`
+            // becomes null.
+            while (elem = elem.offsetParent && elem.style.position != 'absolute') {
+                x += elem.offsetLeft;
+                y += elem.offsetTop;
+            }
+
+            return { left: x, top: y };
+        }
+        // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
+        const bbox = node.getBoundingClientRect();
+        const offset = calcOffset(node);
+        this.show([offset.left + bbox.width, offset.top + bbox.height]);
+      }
+    })
 
     // clear polling timer
     clearInterval(tid);
@@ -1980,6 +2019,8 @@ function init_common() {
   // mark non-body figures created by knitr chunks as 100% width
   $('.layout-chunk').each(function(i, val) {
     var figures = $(this).find('img, .html-widget');
+    // ignore leaflet img layers (#106)
+    figures = figures.filter(':not(img[class*="leaflet"])')
     if ($(this).attr('data-layout') !== "l-body") {
       figures.css('width', '100%');
     } else {
@@ -2002,7 +2043,7 @@ function init_common() {
   // get rid of index.html references in header
   if (window.location.protocol !== "file:") {
     $('.distill-site-header a[href]').each(function(i,val) {
-      $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+      $(this).attr('href', $(this).attr('href').replace(/^index[.]html/, "./"));
     });
   }
 
@@ -2351,7 +2392,7 @@ d-appendix d-footnote-list a.footnote-backlink {
   color: var(--hover-color, white);
 }</style>
 <!--/radix_placeholder_distill-->
-  <script src="../../site_libs/header-attrs-2.14/header-attrs.js"></script>
+  <script src="../../site_libs/header-attrs-2.18/header-attrs.js"></script>
   <script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
   <script src="../../site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="../../site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
@@ -2372,7 +2413,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Imputation Bias in Forensic Fingerprint Examinations","description":"An introduction to my Summer 2021 research on imputation bias in minutiae markings\nby fingerprint examiners.","authors":[{"author":"Sherry Huang","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-07-16T00:00:00.000+00:00","citationText":"Huang, 2022"}
+{"title":"Imputation Bias in Forensic Fingerprint Examinations","description":"An introduction to my Summer 2021 research on imputation bias in minutiae markings\nby fingerprint examiners.","authors":[{"author":"Sherry Huang","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-07-16T00:00:00.000-04:00","citationText":"Huang, 2022"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2399,8 +2440,8 @@ d-appendix d-footnote-list a.footnote-backlink {
 <h1>Imputation Bias in Forensic Fingerprint Examinations</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-<p><p>An introduction to my Summer 2021 research on imputation bias in
-minutiae markings by fingerprint examiners.</p></p>
+<p><p>An introduction to my Summer 2021 research on imputation bias in minutiae markings
+by fingerprint examiners.</p></p>
 </div>
 
 <div class="d-byline">
@@ -2411,123 +2452,102 @@ minutiae markings by fingerprint examiners.</p></p>
 
 <div class="d-article">
 <h1 id="introduction">Introduction</h1>
-<p>Imputation is the process of replacing missing data with substituted
-values. In the forensic fingerprint examination process, this bias could
-come in during the stage of comparing two potential matching prints.
-Examiners are shown the latent and exemplar prints at the same time
-during this stage, and there is evidence of minutiae movement, addition,
-and/or deletion during this stage. In my Summer 2021 research, I
-explored patterns in these movements in order to identify potential
+<p>Imputation is the process of replacing missing data with substituted values. In
+the forensic fingerprint examination process, this bias could come in during the
+stage of comparing two potential matching prints. Examiners are shown the latent
+and exemplar prints at the same time during this stage, and there is evidence of
+minutiae movement, addition, and/or deletion during this stage. In my Summer 2021
+research, I explored patterns in these movements in order to identify potential
 imputation bias in the forensic fingerprint examination process.</p>
 <h1 id="methods">Methods</h1>
-<p>In order to explore minutiae movement across variables such as
-examiners, prints, and feature types, I created an <a
-href="bit.ly/fingerprintimputation">interactive visualization app</a> as
-part of my Summer 2021 research with <a
-href="https://aluby.domains.swarthmore.edu/">Professor Amanda Luby</a>.
-The app allows you to select pairs of prints via the Pair ID drop-down
-menu. Options include mates (variables starting with “M”) and non-mates
-(variables starting with “N”). The app also allows you to specify an
-examiner. On the right, the app displays the minutiae markings of all
-the examiners who looked at the pair of prints (“Print” tab), or the
-minutiae markings of the specific examiner (“Examiner” tab), or the
-summary of the analysis of the prints (“Summary” tab). In the Print and
-Examiner tabs, each point represents a minutiae marking by an examiner.
-Lines represent changes in their markings between stages of examination.
-Hexes represent the concentration of markings, where dark represents a
-higher concentration of markings in the area. The Summary tab displays
-how many examiners looked at the pair of prints; which percentage of the
-examiners were correct, were inconclusive, changed minutiae markings;
+<p>In order to explore minutiae movement across variables such as examiners, prints,
+and feature types, I created an <a href="bit.ly/fingerprintimputation">interactive visualization app</a>
+as part of my Summer 2021 research with <a href="https://aluby.domains.swarthmore.edu/">Professor Amanda Luby</a>.
+The app allows you to select pairs of prints via the Pair ID drop-down menu. Options
+include mates (variables starting with “M”) and non-mates (variables starting with
+“N”). The app also allows you to specify an examiner. On the right, the app displays
+the minutiae markings of all the examiners who looked at the pair of prints (“Print”
+tab), or the minutiae markings of the specific examiner (“Examiner” tab), or the
+summary of the analysis of the prints (“Summary” tab). In the Print and Examiner
+tabs, each point represents a minutiae marking by an examiner. Lines represent changes
+in their markings between stages of examination. Hexes represent the concentration
+of markings, where dark represents a higher concentration of markings in the area.
+The Summary tab displays how many examiners looked at the pair of prints; which
+percentage of the examiners were correct, were inconclusive, changed minutiae markings;
 and the difficulty each examiner ranked the pair of prints.</p>
 <h1 id="results-and-discussion">Results and Discussion</h1>
-<p>Although moving minutiae can occur for a variety of reasons,
-imputation bias is still prevalent when there are changes in minutiae.
-The concern with moving minutiae is that examiners could be doing so in
-order to confirm their preliminary conclusions. For example, as shown by
-my app, examiners tend to move more minutiae in mated pairs, indicating
-that they may be changing more pre-marked minutiae from their first
-stage of examination in order to validate their individualization
-decisions. Additionally, examiners who viewed the same latent print used
-in two different pairs have different preliminary markings, as well as
-different minutiae movements in the Comparison stage. This indicates
-that despite the use of the same latent print in both pairs, examiners
-still mark different minutiae, and then choose to move them differently
-in the Comparison stage. The different minutiae movements indicates
-imputation bias, as they are choosing to move minutiae based on the
-exemplar print it is paired with.</p>
-<p>Many of the minutiae movement occur due to a lack of standardized
-procedure in the forensic fingerprint examination process. For example,
-more deletions might occur in the Comparison stage at an agency where
-there is a minimum minutiae requirement; examiners might be
-unnecessarily marking minutiae in order to hit the minimum, and then
-later deleting the ones that are not helpful. Imputation bias can lead
-to misidentifications, which can be very harmful in large, prominent
-criminal cases. Finally, as previous papers have mentioned, there should
-be a rigorously defined, standard forensic fingerprint examination ACE-V
-process (Ulery et al., 2015). Many of the examiners, in the White Box
-study, stated that exclusions and inconclusive prints were more
-difficult when they had to mark minutiae (which they were not required
-to do so in the Black Box study) (Ulery et al., 2015). This indicates
-that examiners do not necessarily have to mark minutiae in a
-standardized way. However, if they did, there might be more transparency
-in the process, which is particularly important when errors occur. In
-the studies, the consequences of making a false identification (or
-exclusion) are insignificant, but in true casework, the consequences
-could change many people’s lives for the worst.</p>
+<p>Although moving minutiae can occur for a variety of reasons, imputation bias is
+still prevalent when there are changes in minutiae. The concern with moving minutiae
+is that examiners could be doing so in order to confirm their preliminary conclusions.
+For example, as shown by my app, examiners tend to move more minutiae in mated pairs,
+indicating that they may be changing more pre-marked minutiae from their first stage
+of examination in order to validate their individualization decisions. Additionally,
+examiners who viewed the same latent print used in two different pairs have different
+preliminary markings, as well as different minutiae movements in the Comparison
+stage. This indicates that despite the use of the same latent print in both pairs,
+examiners still mark different minutiae, and then choose to move them differently
+in the Comparison stage. The different minutiae movements indicates imputation bias,
+as they are choosing to move minutiae based on the exemplar print it is paired with.</p>
+<p>Many of the minutiae movement occur due to a lack of standardized procedure in the
+forensic fingerprint examination process. For example, more deletions might occur
+in the Comparison stage at an agency where there is a minimum minutiae requirement;
+examiners might be unnecessarily marking minutiae in order to hit the minimum, and then
+later deleting the ones that are not helpful. Imputation bias can lead to misidentifications,
+which can be very harmful in large, prominent criminal cases. Finally, as previous
+papers have mentioned, there should be a rigorously defined, standard forensic fingerprint
+examination ACE-V process (Ulery et al., 2015). Many of the examiners, in the White
+Box study, stated that exclusions and inconclusive prints were more difficult when
+they had to mark minutiae (which they were not required to do so in the Black Box
+study) (Ulery et al., 2015). This indicates that examiners do not necessarily have
+to mark minutiae in a standardized way. However, if they did, there might be more
+transparency in the process, which is particularly important when errors occur.
+In the studies, the consequences of making a false identification (or exclusion)
+are insignificant, but in true casework, the consequences could change many people’s
+lives for the worst.</p>
 <h1 id="terminology">Terminology</h1>
 <ul>
-<li><strong>Latent print</strong> - An impression of the friction skin
-of the fingers or palms of the hands that has been transferred to
-another surface. These prints are typically lifted from crime scenes and
-are usually not of the highest quality.</li>
-<li><strong>Exemplar print</strong> - A print of the fingers and/or
-palms deliberately taken from an individual for record-keeping purposes.
-Since these prints are collected under ideal circumstances, they are
-usually high quality.</li>
-<li><strong>Minutiae</strong> - Major features of a fingerprint image;
-they are used in the matching of fingerprints.</li>
-<li><strong>Mates</strong> - Two prints that came from the same
-source.</li>
-<li><strong>Non-mates</strong> - Two prints that did not come from the
-same source.</li>
-<li><strong>ACE-V process</strong> - Method used to reach a
-determination on each print. ACE-V stands for <strong>A</strong>nalysis,
-<strong>C</strong>omparison, <strong>E</strong>valuation, and
-<strong>V</strong>erification.
+<li><strong>Latent print</strong> - An impression of the friction skin of the fingers or palms of the
+hands that has been transferred to another surface. These prints are typically lifted
+from crime scenes and are usually not of the highest quality.</li>
+<li><strong>Exemplar print</strong> - A print of the fingers and/or palms deliberately taken from an
+individual for record-keeping purposes. Since these prints are collected under ideal
+circumstances, they are usually high quality.</li>
+<li><strong>Minutiae</strong> - Major features of a fingerprint image; they are used in the matching
+of fingerprints.</li>
+<li><strong>Mates</strong> - Two prints that came from the same source.</li>
+<li><strong>Non-mates</strong> - Two prints that did not come from the same source.</li>
+<li><strong>ACE-V process</strong> - Method used to reach a determination on each print. ACE-V stands
+for <strong>A</strong>nalysis, <strong>C</strong>omparison, <strong>E</strong>valuation, and <strong>V</strong>erification.
 <ul>
-<li><strong>Analysis</strong>: The examiner assesses the exemplar print
-to determine if it can be used for comparison. This step involves the
-preliminary assessment of several factors like the surface material, the
-substance of the print itself, and/or minutiae.</li>
-<li><strong>Comparison</strong>: The examiner is shown both the exemplar
-and a latent print. The latent print may come from searching through the
-Automated Fingerprint Identification System (AFIS) or some other
-fingerprint database. The examiner analyses characteristic attributes of
-both prints and identifies conformities between the exemplar and the
-latent prints.</li>
-<li><strong>Evaluation</strong>: The examiner decides if the prints are
-from the same source (identification or individualization), different
-sources (exclusion), or are inconclusive.</li>
-<li><strong>Verification</strong>: If an identification is made, the
-conclusion must be verified by another fingerprint examiner.</li>
+<li><strong>Analysis</strong>: The examiner assesses the exemplar print to determine if it
+can be used for comparison. This step involves the preliminary assessment of
+several factors like the surface material, the substance of the print itself,
+and/or minutiae.</li>
+<li><strong>Comparison</strong>: The examiner is shown both the exemplar and a latent print.
+The latent print may come from searching through the Automated Fingerprint Identification
+System (AFIS) or some other fingerprint database. The examiner analyses characteristic
+attributes of both prints and identifies conformities between the exemplar and
+the latent prints.</li>
+<li><strong>Evaluation</strong>: The examiner decides if the prints are from the same source
+(identification or individualization), different sources (exclusion), or are
+inconclusive.</li>
+<li><strong>Verification</strong>: If an identification is made, the conclusion must be verified
+by another fingerprint examiner.</li>
 </ul></li>
 </ul>
 <h1 id="references">References</h1>
 <ol type="1">
-<li>Ulery, B. T., Hicklin, R. A., Buscaglia, J., and Roberts, M. A.
-(2011). Accuracy and reliability of forensic latent fingerprint
-decisions. Proceedings of the National Academy of Sciences,
-108(19):7733–7738.</li>
-<li>Ulery, B. T., Hicklin, R. A., Roberts, M. A., and Buscaglia, J.
-(2014). Measuring what latent fingerprint examiners consider sufficient
-information for individualization determinations. PlOS ONE,
-9(11):e110179.</li>
-<li>Ulery, B. T., Hicklin, R. A., Roberts, M. A., and Buscaglia, J.
-(2015). Changes in latent fingerprint examiners’ markup between analysis
-and comparison. Forensic Science International, 247:54–61.</li>
+<li>Ulery, B. T., Hicklin, R. A., Buscaglia, J., and Roberts, M. A. (2011). Accuracy
+and reliability of forensic latent fingerprint decisions. Proceedings of the National
+Academy of Sciences, 108(19):7733–7738.</li>
+<li>Ulery, B. T., Hicklin, R. A., Roberts, M. A., and Buscaglia, J. (2014). Measuring
+what latent fingerprint examiners consider sufficient information for individualization
+determinations. PlOS ONE, 9(11):e110179.</li>
+<li>Ulery, B. T., Hicklin, R. A., Roberts, M. A., and Buscaglia, J. (2015). Changes
+in latent fingerprint examiners’ markup between analysis and comparison. Forensic
+Science International, 247:54–61.</li>
 </ol>
-<div class="sourceCode" id="cb1"><pre
-class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
