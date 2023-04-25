@@ -50,16 +50,17 @@ pre.numberSource code > span > a:first-child::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {   }
+  { color: #00769e; background-color: #f1f3f5; }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
+code span { color: #00769e; } /* Normal */
 code span.al { color: #ad0000; } /* Alert */
 code span.an { color: #5e5e5e; } /* Annotation */
-code span.at { color: #20794d; } /* Attribute */
+code span.at { color: #657422; } /* Attribute */
 code span.bn { color: #ad0000; } /* BaseN */
 code span.bu { } /* BuiltIn */
-code span.cf { color: #007ba5; } /* ControlFlow */
+code span.cf { color: #00769e; } /* ControlFlow */
 code span.ch { color: #20794d; } /* Char */
 code span.cn { color: #8f5902; } /* Constant */
 code span.co { color: #5e5e5e; } /* Comment */
@@ -73,11 +74,11 @@ code span.fl { color: #ad0000; } /* Float */
 code span.fu { color: #4758ab; } /* Function */
 code span.im { } /* Import */
 code span.in { color: #5e5e5e; } /* Information */
-code span.kw { color: #007ba5; } /* Keyword */
+code span.kw { color: #00769e; } /* Keyword */
 code span.op { color: #5e5e5e; } /* Operator */
-code span.ot { color: #007ba5; } /* Other */
+code span.ot { color: #00769e; } /* Other */
 code span.pp { color: #ad0000; } /* Preprocessor */
-code span.sc { color: #20794d; } /* SpecialChar */
+code span.sc { color: #5e5e5e; } /* SpecialChar */
 code span.ss { color: #20794d; } /* SpecialString */
 code span.st { color: #20794d; } /* String */
 code span.va { color: #111111; } /* Variable */
@@ -85,30 +86,28 @@ code span.vs { color: #20794d; } /* VerbatimString */
 code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
-  <!--radix_placeholder_meta_tags-->
-  <title>Sherry Huang: White Box Study</title>
 
-  <meta property="description" itemprop="description" content="Some details about the White Box study data set"/>
+  <!--radix_placeholder_meta_tags-->
+  <title>Sherry Huang: Courses</title>
+
 
 
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Sherry Huang: White Box Study"/>
+  <meta property="og:title" content="Sherry Huang: Courses"/>
   <meta property="og:type" content="article"/>
-  <meta property="og:description" content="Some details about the White Box study data set"/>
   <meta property="og:locale" content="en_US"/>
   <meta property="og:site_name" content="Sherry Huang"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Sherry Huang: White Box Study"/>
-  <meta property="twitter:description" content="Some details about the White Box study data set"/>
+  <meta property="twitter:title" content="Sherry Huang: Courses"/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description"]}},"value":[{"type":"character","attributes":{},"value":["White Box Study"]},{"type":"character","attributes":{},"value":["Some details about the White Box study data set"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title"]}},"value":[{"type":"character","attributes":{},"value":["Courses"]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -786,6 +785,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   d-article table.gt_table td,
   d-article table.gt_table th {
     border-bottom: none;
+    font-size: 100%;
   }
 
   .html-widget {
@@ -1027,10 +1027,6 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     position: relative;
     margin-bottom: 2.5em;
     margin-top: 1.5em;
-  }
-
-  .figure img {
-    width: 100%;
   }
 
   .figure .caption {
@@ -1862,7 +1858,22 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
       // hoverable references
       $('span.citation[data-cites]').each(function() {
-        var refHtml = $('#ref-' + $(this).attr('data-cites')).html();
+        const citeChild = $(this).children()[0]
+        // Do not process if @xyz has been used without escaping and without bibliography activated
+        // https://github.com/rstudio/distill/issues/466
+        if (citeChild === undefined) return true
+
+        if (citeChild.nodeName == "D-FOOTNOTE") {
+          var fn = citeChild
+          $(this).html(fn.shadowRoot.querySelector("sup"))
+          $(this).id = fn.id
+          fn.remove()
+        }
+        var refs = $(this).attr('data-cites').split(" ");
+        var refHtml = refs.map(function(ref) {
+          // Could use CSS.escape too here, we insure backward compatibility in navigator
+          return "<p>" + $('div[id="ref-' + ref + '"]').html() + "</p>";
+        }).join("\n");
         window.tippy(this, {
           allowHTML: true,
           content: refHtml,
@@ -1873,6 +1884,31 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
           placement: 'bottom-start'
         });
       });
+
+      // fix footnotes in tables (#411)
+      // replacing broken distill.pub feature
+      $('table d-footnote').each(function() {
+        // we replace internal showAtNode methode which is triggered when hovering a footnote
+        this.hoverBox.showAtNode = function(node) {
+          // ported from https://github.com/distillpub/template/pull/105/files
+          calcOffset = function(elem) {
+              let x = elem.offsetLeft;
+              let y = elem.offsetTop;
+              // Traverse upwards until an `absolute` element is found or `elem`
+              // becomes null.
+              while (elem = elem.offsetParent && elem.style.position != 'absolute') {
+                  x += elem.offsetLeft;
+                  y += elem.offsetTop;
+              }
+
+              return { left: x, top: y };
+          }
+          // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
+          const bbox = node.getBoundingClientRect();
+          const offset = calcOffset(node);
+          this.show([offset.left + bbox.width, offset.top + bbox.height]);
+        }
+      })
 
       // clear polling timer
       clearInterval(tid);
@@ -1972,6 +2008,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     // mark non-body figures created by knitr chunks as 100% width
     $('.layout-chunk').each(function(i, val) {
       var figures = $(this).find('img, .html-widget');
+      // ignore leaflet img layers (#106)
+      figures = figures.filter(':not(img[class*="leaflet"])')
       if ($(this).attr('data-layout') !== "l-body") {
         figures.css('width', '100%');
       } else {
@@ -1994,7 +2032,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     // get rid of index.html references in header
     if (window.location.protocol !== "file:") {
       $('.distill-site-header a[href]').each(function(i,val) {
-        $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+        $(this).attr('href', $(this).attr('href').replace(/^index[.]html/, "./"));
       });
     }
 
@@ -2343,7 +2381,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     color: var(--hover-color, white);
   }</style>
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+  <script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
   <link href="site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
@@ -2363,7 +2401,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"White Box Study","description":"Some details about the White Box study data set","authors":[]}
+{"title":"Courses","authors":[]}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2387,1335 +2425,89 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>White Box Study</h1>
+<h1>Courses</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-<p><p>Some details about the White Box study data set</p></p>
+
 </div>
 
 
 <div class="d-article">
-<p>The White Box study <a
-href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4221158/">paper</a>
-(and this additional <a
-href="https://noblis.org/wp-content/uploads/2017/11/Analysis-to-Comparison_FSI-preprint_Final.pdf">paper</a>
-about it) discusses and analyzes the White Box data set. The data is
-stored in an Excel sheet, and there are <span
-class="math inline">\(8\)</span> tabs in it. Those different tabs are
-the data sets shown below.</p>
-<h1 id="whitebox_survey">WhiteBox_Survey</h1>
-<details>
-<summary>
-<strong>Variables</strong>
-</summary>
-<ol type="1">
-<li><code>4.0</code>: gender of examiner</li>
-</ol>
+<h1 id="spring-2023">Spring 2023</h1>
 <ul>
-<li>ex: <code>Female</code>, <code>Male</code></li>
+<li><strong>CHIN 033</strong>: Intro to Classical Chinese</li>
+<li><strong>CHIN 099</strong>: Senior Colloquium</li>
+<li><strong>MATH 097</strong>: Senior Conference</li>
+<li><strong>MUSI 044</strong>: Performance Orchestra</li>
+<li><strong>STAT 111</strong>: Mathematical Statistics II</li>
 </ul>
-<ol start="2" type="1">
-<li><code>2. Age</code>: age range of examiner</li>
-</ol>
+<h1 id="fall-2022">Fall 2022</h1>
 <ul>
-<li>ex: <span class="math inline">\(30-39\)</span>, <span
-class="math inline">\(40-49\)</span></li>
+<li><strong>CHIN 020</strong>: Readings in Modern Chinese</li>
+<li><strong>CHIN 108</strong>: The Remaking of Cinematic China</li>
+<li><strong>CPSC 063</strong>: Artificial Intelligence</li>
+<li><strong>MATH 097</strong>: Senior Conference</li>
+<li><strong>MUSI 044</strong>: Performance Orchestra</li>
+<li><strong>STAT 061</strong>: Mathematical Statistics I</li>
 </ul>
-<ol start="3" type="1">
-<li><code>3. Education</code>: education level of examiner</li>
-</ol>
+<h1 id="spring-2022">Spring 2022</h1>
 <ul>
-<li>ex: <code>Grad</code>, <code>Assoc</code>, <code>Bachelor</code>,
-<code>HS</code></li>
+<li><strong>CHIN 012</strong>: Advanced Chinese</li>
+<li><strong>CHIN 012A</strong>: Advanced Chinese Conversation</li>
+<li><strong>CPSC 043</strong>: Networks</li>
+<li><strong>MUSI 044</strong>: Performance Orchestra</li>
+<li><strong>MATH 044</strong>: Differential Equations</li>
 </ul>
-<ol start="4" type="1">
-<li><code>4. Employer</code>: employer of examiner</li>
-</ol>
+<h1 id="fall-2021">Fall 2021</h1>
 <ul>
-<li>ex: <code>U.S. City/County government</code>,
-<code>Non-U.S. National/Federal government</code>,
-<code>U.S. State government</code>,
-<code>U.S. Federal government</code></li>
+<li><strong>CHIN 011</strong>: Third Year Chinese</li>
+<li><strong>CPSC 041</strong>: Algorithms</li>
+<li><strong>EDUC 053</strong>: Educating the Emergent Bilingual</li>
+<li><strong>MUSI 044</strong>: Performance Orchestra</li>
+<li><strong>MATH 063</strong>: Real Analysis I</li>
 </ul>
-<ol start="5" type="1">
-<li><code>5. Agency accred.</code>: whether examiner is accredited by
-agency</li>
-</ol>
+<h1 id="spring-2021">Spring 2021</h1>
 <ul>
-<li>ex: <code>Yes</code>, <code>No</code></li>
+<li><strong>CPSC 031</strong>: Intro to Computer Systems</li>
+<li><strong>EDUC 014</strong>: Intro Education</li>
+<li><strong>LING 073</strong>: Computational Linguistics</li>
+<li><strong>STAT 051</strong>: Probability</li>
 </ul>
-<ol start="6" type="1">
-<li><code>6. Years employed</code>: range of years examiner was
-employed</li>
-</ol>
+<h1 id="j-term-2021">J-term 2021</h1>
 <ul>
-<li>ex: <span class="math inline">\(5-9\)</span>, <span
-class="math inline">\(10-19\)</span></li>
+<li><strong>STAT 041</strong>: Statistical Graphics and Data Visualizations</li>
 </ul>
-<ol start="7" type="1">
-<li><code>7. Training</code>: examiners’ form of training</li>
-</ol>
+<h1 id="fall-2020">Fall 2020</h1>
 <ul>
-<li>ex: <code>Limited formal</code>, <code>Formal halfYear</code>,
-<code>Formal yr+</code>, <code>Other</code></li>
+<li><strong>CHIN 011A</strong>: Third Year Conversation</li>
+<li><strong>CPSC 035</strong>: Data Structures &amp; Algorithms</li>
+<li><strong>MATH 034</strong>: Several Variable Calculus</li>
+<li><strong>STAT 021</strong>: Statistical Methods II</li>
 </ul>
-<ol start="8" type="1">
-<li><code>8. IAI-cert</code>:</li>
-</ol>
+<h1 id="summer-2020">Summer 2020</h1>
 <ul>
-<li>ex: <code>IAI</code>, <code>NA</code></li>
-</ul>
-<ol start="9" type="1">
-<li><code>8. Employer-cert</code>:</li>
-</ol>
-<ul>
-<li>ex: <code>Employer</code>, <code>NA</code></li>
-</ul>
-<ol start="10" type="1">
-<li><code>8. National-cert</code>:</li>
-</ol>
-<ul>
-<li>ex: <code>National</code>, <code>NA</code></li>
-</ul>
-<ol start="11" type="1">
-<li><code>8. Other-cert</code>:</li>
-</ol>
-<ul>
-<li>ex: <code>Other</code>, <code>NA</code></li>
-</ul>
-<ol start="12" type="1">
-<li><code>9. Active</code>:</li>
-</ol>
-<ul>
-<li>ex: <code>Yes</code>, <code>previously regular</code>,
-<code>No</code></li>
-</ul>
-<ol start="13" type="1">
-<li><code>10. Time spent</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(\text{Less than }10\%\)</span>,
-<span class="math inline">\(10-25\%\)</span>, <span
-class="math inline">\(25-50\%\)</span>, <span
-class="math inline">\(50-75\%\)</span>, <span
-class="math inline">\(75-100\%\)</span></li>
-</ul>
-<ol start="14" type="1">
-<li><code>11. Computer-based</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0\% \text{ computer}\)</span>, <span
-class="math inline">\(1-30\% \text{ computer}\)</span>, <span
-class="math inline">\(30-60\% \text{ computer}\)</span>, <span
-class="math inline">\(60-99\% \text{ computer}\)</span>, <span
-class="math inline">\(100\% \text{ computer}\)</span></li>
-</ul>
-<ol start="15" type="1">
-<li><code>12. Single exemplar</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(\text{None}\)</span>, <span
-class="math inline">\(\text{Less than } 10\%\)</span>, <span
-class="math inline">\(10-25\%\)</span>, <span
-class="math inline">\(25-50\%\)</span>, <span
-class="math inline">\(50-75\%\)</span>, <span
-class="math inline">\(75-100\%\)</span></li>
-</ul>
-<ol start="16" type="1">
-<li><code>13. Limited match</code>:</li>
-</ol>
-<ul>
-<li>ex: <code>Yes</code>, <code>No</code></li>
-</ul>
-<ol start="17" type="1">
-<li><code>14. VEOs</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(\text{its own category
-(standard)}\)</span>, <span class="math inline">\(\text{its own category
-(request)}\)</span>, <span class="math inline">\(\text{Of
-value}\)</span>, <span class="math inline">\(\text{No
-value}\)</span></li>
-</ul>
-<ol start="18" type="1">
-<li><code>15. AFIS value</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(\text{Yes, used as formal
-designation}\)</span>, <span class="math inline">\(\text{Yes, used
-informally}\)</span>, <span
-class="math inline">\(\text{No}\)</span></li>
-</ul>
-<ol start="19" type="1">
-<li><code>16. Test latents similar?</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(\text{Some of them}\)</span>, <span
-class="math inline">\(\text{Most of them}\)</span>, <span
-class="math inline">\(\text{All of them}\)</span></li>
-</ul>
-<ol start="20" type="1">
-<li><code>17. Exemplars similar?</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(\text{Some of them}\)</span>, <span
-class="math inline">\(\text{Most of them}\)</span>, <span
-class="math inline">\(\text{All of them}\)</span>, <span
-class="math inline">\(\text{All but one or two}\)</span></li>
-</ul>
-<ol start="21" type="1">
-<li><code>18. Compare to casework</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(\text{MUCH EASIER than
-casework}\)</span>, <span class="math inline">\(\text{EASIER than
-casework}\)</span>, <span class="math inline">\(\text{SIMILAR to
-casework}\)</span>, <span class="math inline">\(\text{HARDER than
-casework}\)</span>, <span class="math inline">\(\text{MUCH HARDER than
-casework}\)</span></li>
-</ul>
-<ol start="22" type="1">
-<li><code>19. Markup useful?</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(\text{Possibly}\)</span>, <span
-class="math inline">\(\text{Yes, for general practice}\)</span>, <span
-class="math inline">\(\text{Yes, Only for complex cases}\)</span>, <span
-class="math inline">\(\text{No}\)</span></li>
-</ul>
-<ol start="23" type="1">
-<li><code>20. PointStandardCount</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(16\)</span>, <code>NA</code></li>
-</ul>
-</details>
-<h2 id="data-set">Data Set</h2>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>wb_survey</span><span class='op'>)</span>
-</code></pre>
-</div>
-<pre><code># A tibble: 6 × 23
-  `4.0`  `2. Age` `3. Education` `4. Employer`        `5. Agency accr…
-  &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt;          &lt;chr&gt;                &lt;chr&gt;           
-1 Female 30-39    Grad           U.S. City/County go… No              
-2 Male   30-39    Assoc          Non-U.S. National/F… No              
-3 Female 30-39    Grad           U.S. State governme… Yes             
-4 Female 40-49    Bachelor       U.S. Federal govern… Yes             
-5 Male   60-69    Assoc          U.S. Federal govern… Yes             
-6 Female 30-39    Bachelor       U.S. Federal govern… Yes             
-# … with 18 more variables: 6. Years employed &lt;chr&gt;,
-#   7. Training &lt;chr&gt;, 8. IAI-cert &lt;chr&gt;, 8. Employer-cert &lt;chr&gt;,
-#   8. National-cert &lt;chr&gt;, 8. Other-cert &lt;chr&gt;, 9. Active &lt;chr&gt;,
-#   10. Time spent &lt;chr&gt;, 11. Computer-based &lt;chr&gt;,
-#   12. Single exemplar &lt;chr&gt;, 13. Limited match &lt;chr&gt;,
-#   14. VEOs &lt;chr&gt;, 15. AFIS value &lt;chr&gt;,
-#   16. Test latents similar? &lt;chr&gt;, 17. Exemplars similar? &lt;chr&gt;,
-#   18. Compare to casework &lt;chr&gt;, 19. Markup useful? &lt;chr&gt;,
-#   20. PointStandardCount &lt;dbl&gt;</code></pre>
-</div>
-<h1 id="whitebox_imagepairoverview">WhiteBox_ImagePairOverview</h1>
-<details>
-<summary>
-<strong>Variables</strong>
-</summary>
-<ol type="1">
-<li><code>Pair_ID</code>: unique identifier for the image pair</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(M010003\)</span></li>
-</ul>
-<ol start="2" type="1">
-<li><code>Mating</code>: whether the latent and exemplar originate from
-the same source</li>
-</ol>
-<ul>
-<li>ex: <code>Mates</code>, <code>Non-mates</code></li>
-</ul>
-<ol start="3" type="1">
-<li><code>Latent_ID</code>: ID of latent print</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(\text{L_010}\)</span></li>
-</ul>
-<ol start="4" type="1">
-<li><code># uses of latent</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(1\)</span></li>
-</ul>
-<ol start="5" type="1">
-<li><code>Exemplar_ID</code>: ID of exemplar print</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(\text{E_003}\)</span></li>
-</ul>
-</details>
-<h2 id="data-set-1">Data Set</h2>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>wb_imagepairoverview</span><span class='op'>)</span>
-</code></pre>
-</div>
-<pre><code># A tibble: 6 × 5
-  Pair_ID Mating    Latent_ID `# uses of latent` Exemplar_ID
-  &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;                  &lt;dbl&gt; &lt;chr&gt;      
-1 M010003 Mates     L_010                      1 E_003      
-2 M020006 Mates     L_020                      1 E_006      
-3 N025403 Non-mates L_025                      2 E_403      
-4 M025026 Mates     L_025                      2 E_026      
-5 N027480 Non-mates L_027                      2 E_480      
-6 M027001 Mates     L_027                      2 E_001      </code></pre>
-</div>
-<h1 id="whitebox_determinations">WhiteBox_Determinations</h1>
-<details>
-<summary>
-<strong>Variables</strong>
-</summary>
-<ol type="1">
-<li><code>Pair_ID</code>: unique identifier for the image pair</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(M010003\)</span></li>
-</ul>
-<ol start="2" type="1">
-<li><code>Examiner (Anon)</code>: unique, anonymized identifier for the
-examiner</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(EA1338\)</span></li>
-</ul>
-<ol start="3" type="1">
-<li><code>Mating</code>: whether the latent and exemplar originate from
-the same source</li>
-</ol>
-<ul>
-<li>ex: <code>Mates</code>, <code>Non-mates</code></li>
-</ul>
-<ol start="4" type="1">
-<li><code>Latent Value (Analysis)</code>:</li>
-</ol>
-<ul>
-<li>ex: <code>VID</code>, <code>VEO</code>, <code>NV</code></li>
-</ul>
-<ol start="5" type="1">
-<li><code>Latent Value (Comparison)</code>:</li>
-</ol>
-<ul>
-<li>ex: <code>VID</code>, <code>VEO</code>, <code>NV</code></li>
-</ul>
-<ol start="6" type="1">
-<li><code>Exemplar Value</code>:</li>
-</ol>
-<ul>
-<li>ex: <code>VALUE</code></li>
-</ul>
-<ol start="7" type="1">
-<li><code>Comparison Determination</code>: how examiner identified
-comparison (or not)</li>
-</ol>
-<ul>
-<li>ex: <code>ID</code>, <code>Exclusion</code>, <code>Inconc</code>,
-<code>None</code></li>
-</ul>
-<ol start="8" type="1">
-<li><code>Difficulty</code>: examiner’s rating of difficulty to make
-comparison decision</li>
-</ol>
-<ul>
-<li>ex: <code>VERYEASY</code>, <code>EASY</code>, <code>MODERATE</code>,
-<code>DIFFICULT</code>, <code>VERYDIFFICULT</code></li>
-</ul>
-<ol start="9" type="1">
-<li><code>Latent minutiae</code>: number of minutiae found by examiner
-on latent print</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(31\)</span></li>
-</ul>
-<ol start="10" type="1">
-<li><code>Latent cores</code>: number of cores found by examiner on
-latent print</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(1\)</span></li>
-</ul>
-<ol start="11" type="1">
-<li><code>Latent deltas</code>: number of delta areas found by examiner
-on latent print</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0\)</span>, <span
-class="math inline">\(1\)</span></li>
-</ul>
-<ol start="12" type="1">
-<li><code>Latent points</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0\)</span>, <span
-class="math inline">\(2\)</span></li>
-</ul>
-<ol start="13" type="1">
-<li><code>Exemplar minutiae</code>: number of minutiae found by examiner
-on exemplar print</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(19\)</span></li>
-</ul>
-<ol start="14" type="1">
-<li><code>Corresp minutiae</code>: number of minutiae found altogether
-by examiner on corresponding latent and exemplar prints</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(19\)</span></li>
-</ul>
-<ol start="15" type="1">
-<li><code>Corresp core</code>: number of cores found altogether by
-examiner on corresponding latent and exemplar prints</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(1\)</span></li>
-</ul>
-<ol start="16" type="1">
-<li><code>Corresp delta</code>: number of delta areas found altogether
-by examiner on corresponding latent and exemplar prints</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0\)</span>, <span
-class="math inline">\(1\)</span></li>
-</ul>
-<ol start="17" type="1">
-<li><code>Corresp points</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0\)</span>, <span
-class="math inline">\(2\)</span></li>
-</ul>
-</details>
-<h2 id="data-set-2">Data Set</h2>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>wb_determinations</span><span class='op'>)</span>
-</code></pre>
-</div>
-<pre><code># A tibble: 6 × 17
-  Pair_ID `Examiner (Anon)` Mating `Latent Value (A… `Latent Value (C…
-  &lt;chr&gt;   &lt;chr&gt;             &lt;chr&gt;  &lt;chr&gt;             &lt;chr&gt;            
-1 M010003 EA1338            Mates  VID               VID              
-2 M010003 EA1365            Mates  VID               VID              
-3 M010003 EA1424            Mates  VID               VID              
-4 M010003 EA1474            Mates  VID               VID              
-5 M010003 EA1480            Mates  VID               VID              
-6 M010003 EA1567            Mates  VID               VID              
-# … with 12 more variables: Exemplar Value &lt;chr&gt;,
-#   Comparison Determination &lt;chr&gt;, Difficulty &lt;chr&gt;,
-#   Latent minutiae &lt;dbl&gt;, Latent cores &lt;dbl&gt;, Latent deltas &lt;dbl&gt;,
-#   Latent points &lt;dbl&gt;, Exemplar minutiae &lt;dbl&gt;,
-#   Corresp minutiae &lt;dbl&gt;, Corresp core &lt;dbl&gt;, Corresp delta &lt;dbl&gt;,
-#   Corresp points &lt;dbl&gt;</code></pre>
-</div>
-<h1 id="whitebox_markup">WhiteBox_Markup</h1>
-<details>
-<summary>
-<strong>Variables</strong>
-</summary>
-<ol type="1">
-<li><code>Pair_ID</code>: unique identifier for the image pair</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(M010003\)</span></li>
-</ul>
-<ol start="2" type="1">
-<li><code>Examiner (Anon)</code>: unique, anonymized identifier for the
-examiner</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(EA1338\)</span></li>
-</ul>
-<ol start="3" type="1">
-<li><code>Print</code>: whether print is latent or exemplar</li>
-</ol>
-<ul>
-<li>ex: <code>Latent</code>, <code>Exemplar</code></li>
-</ul>
-<ol start="4" type="1">
-<li><code>Stage</code>: whether stage is analysis or comparison</li>
-</ol>
-<ul>
-<li>ex: <code>Analysis</code>, <code>Comparison</code></li>
-</ul>
-<ol start="5" type="1">
-<li><code>CorrespondenceType</code>:</li>
-</ol>
-<ul>
-<li>ex: <code>NA</code>, <code>DebatableFeature</code></li>
-</ul>
-<ol start="6" type="1">
-<li><code>LType</code>: latent print type</li>
-</ol>
-<ul>
-<li>ex: <code>minutia</code>, <code>core</code>, <code>NA</code></li>
-</ul>
-<ol start="7" type="1">
-<li><code>Latent_X</code>: X coordinate of latent minutiae</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(68\)</span></li>
-</ul>
-<ol start="8" type="1">
-<li><code>Latent_Y</code>: Y coordinate of latent minutiae</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(705\)</span></li>
-</ul>
-<ol start="9" type="1">
-<li><code>Latent_Quality</code>: quality of latent print</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(3\)</span></li>
-</ul>
-<ol start="10" type="1">
-<li><code>EType</code>: exemplar print type</li>
-</ol>
-<ul>
-<li>ex: <code>NA</code>, <code>minutia</code>, <code>core</code>,
-<code>delta</code></li>
-</ul>
-<ol start="11" type="1">
-<li><code>Exemplar_X</code>: X coordinate of exemplar minutiae</li>
-</ol>
-<ul>
-<li>ex: <code>NA</code>, <span class="math inline">\(172\)</span></li>
-</ul>
-<ol start="12" type="1">
-<li><code>Exemplar_Y</code>: Y coordinate of exemplar minutiae</li>
-</ol>
-<ul>
-<li>ex: <code>NA</code>, <span class="math inline">\(222\)</span></li>
-</ul>
-<ol start="13" type="1">
-<li><code>Exemplar_Quality</code>: quality of exemplar print</li>
-</ol>
-<ul>
-<li>ex: <code>NA</code>, <span class="math inline">\(3\)</span></li>
-</ul>
-<ol start="14" type="1">
-<li><code>Corresponding Clarity</code>: minimum of
-<code>Latent_Quality</code> and <code>Exemplar_Quality</code></li>
-</ol>
-<ul>
-<li>ex: <code>NA</code>, <span class="math inline">\(3\)</span></li>
-</ul>
-</details>
-<h2 id="data-set-3">Data Set</h2>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>wb_markup</span><span class='op'>)</span>
-</code></pre>
-</div>
-<pre><code># A tibble: 6 × 14
-  Pair_ID `Examiner (Anon… Print Stage CorrespondenceT… LType Latent_X
-  &lt;chr&gt;   &lt;chr&gt;            &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;            &lt;chr&gt;    &lt;dbl&gt;
-1 M010003 EA1338           Late… Anal… &lt;NA&gt;             minu…       68
-2 M010003 EA1338           Late… Anal… &lt;NA&gt;             minu…      135
-3 M010003 EA1338           Late… Anal… &lt;NA&gt;             minu…      141
-4 M010003 EA1338           Late… Anal… &lt;NA&gt;             minu…      161
-5 M010003 EA1338           Late… Anal… &lt;NA&gt;             minu…      178
-6 M010003 EA1338           Late… Anal… &lt;NA&gt;             minu…      198
-# … with 7 more variables: Latent_Y &lt;dbl&gt;, Latent_Quality &lt;dbl&gt;,
-#   EType &lt;chr&gt;, Exemplar_X &lt;dbl&gt;, Exemplar_Y &lt;dbl&gt;,
-#   Exemplar_Quality &lt;dbl&gt;, Corresponding Clarity &lt;dbl&gt;</code></pre>
-</div>
-<h1 id="whitebox_medianclarity">WhiteBox_MedianClarity</h1>
-<details>
-<summary>
-<strong>Variables</strong>
-</summary>
-<ol type="1">
-<li><code>Image #</code>: unique identifier for the image</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(\text{L_010}\)</span></li>
-</ul>
-<ol start="2" type="1">
-<li><code>Pair_ID</code>: unique identifier for the image pair</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(M010003\)</span></li>
-</ul>
-<ol start="3" type="1">
-<li><code>Image Type</code>: type of image print</li>
-</ol>
-<ul>
-<li>ex: <code>Latent</code>, <code>Exemplar</code></li>
-</ul>
-<ol start="4" type="1">
-<li><code>Phase</code>: phase of examination</li>
-</ol>
-<ul>
-<li>ex: <code>Analysis</code>, <code>Comparison</code></li>
-</ul>
-<ol start="5" type="1">
-<li><code>Image Width (sq mm)</code>: width of image print</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(763.8694\)</span></li>
-</ul>
-<ol start="6" type="1">
-<li><code>Image Height (sq mm)</code>: height of image print</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(938.0626\)</span></li>
-</ul>
-<ol start="7" type="1">
-<li><code>Overall Clarity (LQAS)</code>: overall clarity of image
-print</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(46\)</span></li>
-</ul>
-<ol start="8" type="1">
-<li><code>Local quality 1 - Total area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(496.77320\)</span></li>
-</ul>
-<ol start="9" type="1">
-<li><code>Local quality 2 - Total area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(349.03156\)</span></li>
-</ul>
-<ol start="10" type="1">
-<li><code>LQ2- Region Count</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(2\)</span></li>
-</ul>
-<ol start="11" type="1">
-<li><code>LQ2- Largest contiguous area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(350.96704\)</span></li>
-</ul>
-<ol start="12" type="1">
-<li><code>LQ2- Good flow areas (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(342.57996\)</span></li>
-</ul>
-<ol start="13" type="1">
-<li><code>LQ2- Consistency in good flow areas (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(301.93488\)</span></li>
-</ul>
-<ol start="14" type="1">
-<li><code>LQ2- Consistency in largest contiguous area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(301.93488\)</span></li>
-</ul>
-<ol start="15" type="1">
-<li><code>Local quality 3 - Total area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(167.09644\)</span></li>
-</ul>
-<ol start="16" type="1">
-<li><code>LQ3- Region Count</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(4\)</span></li>
-</ul>
-<ol start="17" type="1">
-<li><code>LQ3- Largest contiguous area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(125.80620\)</span></li>
-</ul>
-<ol start="18" type="1">
-<li><code>LQ3- Good flow areas (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(167.09644\)</span></li>
-</ul>
-<ol start="19" type="1">
-<li><code>LQ3- Consistency in good flow areas (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(127.09652\)</span></li>
-</ul>
-<ol start="20" type="1">
-<li><code>LQ3- Consistency in largest contiguous area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(127.09652\)</span></li>
-</ul>
-<ol start="21" type="1">
-<li><code>Local quality 4 - Total area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0.00000\)</span>, <span
-class="math inline">\(219.99956\)</span></li>
-</ul>
-<ol start="22" type="1">
-<li><code>LQ4- Region Count</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(1\)</span></li>
-</ul>
-<ol start="23" type="1">
-<li><code>LQ4- Largest contiguous area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0.00000\)</span>, <span
-class="math inline">\(212.90280\)</span></li>
-</ul>
-<ol start="24" type="1">
-<li><code>LQ4- Good flow areas (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0.00000\)</span>, <span
-class="math inline">\(219.99956\)</span></li>
-</ul>
-<ol start="25" type="1">
-<li><code>LQ4- Consistency in good flow areas (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0.00000\)</span>, <span
-class="math inline">\(183.87060\)</span></li>
-</ul>
-<ol start="26" type="1">
-<li><code>LQ4- Consistency in largest contiguous area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0.00000\)</span>, <span
-class="math inline">\(183.87060\)</span></li>
-</ul>
-<ol start="27" type="1">
-<li><code>Local quality 5 - Total area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0.00000\)</span>, <span
-class="math inline">\(0.64516\)</span></li>
-</ul>
-<ol start="28" type="1">
-<li><code>LQ5- Region Count</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(1\)</span></li>
-</ul>
-<ol start="29" type="1">
-<li><code>LQ5- Largest contiguous area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0.00000\)</span>, <span
-class="math inline">\(3.22580\)</span></li>
-</ul>
-<ol start="30" type="1">
-<li><code>LQ5- Good flow areas (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0.00000\)</span>, <span
-class="math inline">\(0.64516\)</span></li>
-</ul>
-<ol start="31" type="1">
-<li><code>LQ5- Consistency in good flow areas (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0.00000\)</span>, <span
-class="math inline">\(0.64516\)</span></li>
-</ul>
-<ol start="32" type="1">
-<li><code>LQ5- Consistency in largest contiguous area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0.00000\)</span>, <span
-class="math inline">\(0.64516\)</span></li>
-</ul>
-</details>
-<h2 id="data-set-4">Data Set</h2>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>wb_medianclarity</span><span class='op'>)</span>
-</code></pre>
-</div>
-<pre><code># A tibble: 6 × 32
-  `Image #` Pair_ID `Image Type` Phase      `Image Width (sq mm)`
-  &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;        &lt;chr&gt;                      &lt;dbl&gt;
-1 L_010     M010003 Latent       Analysis                    764.
-2 E_003     M010003 Exemplar     Comparison                 1032.
-3 L_010     M010003 Latent       Comparison                  764.
-4 L_020     M020006 Latent       Analysis                    643.
-5 E_006     M020006 Exemplar     Comparison                 1032.
-6 L_020     M020006 Latent       Comparison                  643.
-# … with 27 more variables: Image Height (sq mm) &lt;dbl&gt;,
-#   Overall Clarity (LQAS) &lt;dbl&gt;,
-#   Local quality 1 - Total area (sq mm) &lt;dbl&gt;,
-#   Local quality 2 - Total area (sq mm) &lt;dbl&gt;,
-#   LQ2- Region Count &lt;dbl&gt;,
-#   LQ2- Largest contiguous area (sq mm) &lt;dbl&gt;,
-#   LQ2- Good flow areas (sq mm) &lt;dbl&gt;,
-#   LQ2- Consistency in good flow areas (sq mm) &lt;dbl&gt;,
-#   LQ2- Consistency in largest contiguous area (sq mm) &lt;dbl&gt;,
-#   Local quality 3 - Total area (sq mm) &lt;dbl&gt;,
-#   LQ3- Region Count &lt;dbl&gt;,
-#   LQ3- Largest contiguous area (sq mm) &lt;dbl&gt;,
-#   LQ3- Good flow areas (sq mm) &lt;dbl&gt;,
-#   LQ3- Consistency in good flow areas (sq mm) &lt;dbl&gt;,
-#   LQ3- Consistency in largest contiguous area (sq mm) &lt;dbl&gt;,
-#   Local quality 4 - Total area (sq mm) &lt;dbl&gt;,
-#   LQ4- Region Count &lt;dbl&gt;,
-#   LQ4- Largest contiguous area (sq mm) &lt;dbl&gt;,
-#   LQ4- Good flow areas (sq mm) &lt;dbl&gt;,
-#   LQ4- Consistency in good flow areas (sq mm) &lt;dbl&gt;,
-#   LQ4- Consistency in largest contiguous area (sq mm) &lt;dbl&gt;,
-#   Local quality 5 - Total area (sq mm) &lt;dbl&gt;,
-#   LQ5- Region Count &lt;dbl&gt;,
-#   LQ5- Largest contiguous area (sq mm) &lt;dbl&gt;,
-#   LQ5- Good flow areas (sq mm) &lt;dbl&gt;,
-#   LQ5- Consistency in good flow areas (sq mm) &lt;dbl&gt;,
-#   LQ5- Consistency in largest contiguous area (sq mm) &lt;dbl&gt;</code></pre>
-</div>
-<h1 id="whitebox_claritybytrial">WhiteBox_ClarityByTrial</h1>
-<details>
-<summary>
-<strong>Variables</strong>
-</summary>
-<ol type="1">
-<li><code>Image #</code>: unique identifier for the image</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(\text{L_010}\)</span></li>
-</ul>
-<ol start="2" type="1">
-<li><code>Pair_ID</code>: unique identifier for the image pair</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(M010003\)</span></li>
-</ul>
-<ol start="3" type="1">
-<li><code>Image</code>: type of image print</li>
-</ol>
-<ul>
-<li>ex: <code>Latent</code>, <code>Exemplar</code></li>
-</ul>
-<ol start="4" type="1">
-<li><code>Phase</code>: phase of examination</li>
-</ol>
-<ul>
-<li>ex: <code>Analysis</code>, <code>Comparison</code></li>
-</ul>
-<ol start="5" type="1">
-<li><code>Examiner (Anon)</code>: unique, anonymized identifier for the
-examiner</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(EA1338\)</span></li>
-</ul>
-<ol start="6" type="1">
-<li><code>Total minutiae</code>: total number of minutiae</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(31\)</span></li>
-</ul>
-<ol start="7" type="1">
-<li><code>Min@LQ0</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0\)</span></li>
-</ul>
-<ol start="8" type="1">
-<li><code>Min@LQ1</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0\)</span></li>
-</ul>
-<ol start="9" type="1">
-<li><code>Min@LQ2</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(2\)</span></li>
-</ul>
-<ol start="10" type="1">
-<li><code>Min@LQ3</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(29\)</span></li>
-</ul>
-<ol start="11" type="1">
-<li><code>Min@LQ4</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0\)</span></li>
-</ul>
-<ol start="12" type="1">
-<li><code>Min@LQ5</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0\)</span></li>
-</ul>
-<ol start="13" type="1">
-<li><code>Num cores</code>: number of cores</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(1\)</span></li>
-</ul>
-<ol start="14" type="1">
-<li><code>Num deltas</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0\)</span></li>
-</ul>
-<ol start="15" type="1">
-<li><code>Num others</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0\)</span></li>
-</ul>
-<ol start="16" type="1">
-<li><code>Overall Clarity (LQAS)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(56\)</span></li>
-</ul>
-<ol start="17" type="1">
-<li><code>Local quality 1 - Total area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(472.90228\)</span></li>
-</ul>
-<ol start="18" type="1">
-<li><code>Local quality 2 - Total area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(436.12816\)</span></li>
-</ul>
-<ol start="19" type="1">
-<li><code>LQ2- Region Count</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(2\)</span></li>
-</ul>
-<ol start="20" type="1">
-<li><code>LQ2- Largest contiguous area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(441.28944\)</span></li>
-</ul>
-<ol start="21" type="1">
-<li><code>LQ2- Good flow areas (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(431.61204\)</span></li>
-</ul>
-<ol start="22" type="1">
-<li><code>LQ2- Consistency in good flow areas (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(391.61212\)</span></li>
-</ul>
-<ol start="23" type="1">
-<li><code>LQ2- Consistency in largest contiguous area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(391.61212\)</span></li>
-</ul>
-<ol start="24" type="1">
-<li><code>Local quality 3 - Total area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(216.12860\)</span></li>
-</ul>
-<ol start="25" type="1">
-<li><code>LQ3- Region Count</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(2\)</span></li>
-</ul>
-<ol start="26" type="1">
-<li><code>LQ3- Largest contiguous area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(220.64472\)</span></li>
-</ul>
-<ol start="27" type="1">
-<li><code>LQ3- Good flow areas (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(214.19312\)</span></li>
-</ul>
-<ol start="28" type="1">
-<li><code>LQ3- Consistency in good flow areas (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(175.48352\)</span></li>
-</ul>
-<ol start="29" type="1">
-<li><code>LQ3- Consistency in largest contiguous area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(175.48352\)</span></li>
-</ul>
-<ol start="30" type="1">
-<li><code>Local quality 4 - Total area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0.00000\)</span>, <span
-class="math inline">\(238.06404\)</span></li>
-</ul>
-<ol start="31" type="1">
-<li><code>LQ4- Region Count</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(1\)</span></li>
-</ul>
-<ol start="32" type="1">
-<li><code>LQ4- Largest contiguous area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0.00000\)</span>, <span
-class="math inline">\(242,58016\)</span></li>
-</ul>
-<ol start="33" type="1">
-<li><code>LQ4- Good flow areas (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0.00000\)</span>, <span
-class="math inline">\(235.48340\)</span></li>
-</ul>
-<ol start="34" type="1">
-<li><code>LQ4- Consistency in good flow areas (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0.00000\)</span>, <span
-class="math inline">\(194.83832\)</span></li>
-</ul>
-<ol start="35" type="1">
-<li><code>LQ4- Consistency in largest contiguous area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0.00000\)</span>, <span
-class="math inline">\(194.83832\)</span></li>
-</ul>
-<ol start="36" type="1">
-<li><code>Local quality 5 - Total area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0.00000\)</span>, <span
-class="math inline">\(3.87096\)</span></li>
-</ul>
-<ol start="37" type="1">
-<li><code>LQ5- Region Count</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(1\)</span></li>
-</ul>
-<ol start="38" type="1">
-<li><code>LQ5- Largest contiguous area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0.00000\)</span>, <span
-class="math inline">\(1.93548\)</span></li>
-</ul>
-<ol start="39" type="1">
-<li><code>LQ5- Good flow areas (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0.00000\)</span>, <span
-class="math inline">\(3.87096\)</span></li>
-</ul>
-<ol start="40" type="1">
-<li><code>LQ5- Consistency in good flow areas (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0.00000\)</span>, <span
-class="math inline">\(0.64516\)</span></li>
-</ul>
-<ol start="41" type="1">
-<li><code>LQ5- Consistency in largest contiguous area (sq mm)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0.00000\)</span>, <span
-class="math inline">\(0.64516\)</span></li>
-</ul>
-</details>
-<h2 id="data-set-5">Data Set</h2>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>wb_claritybytrial</span><span class='op'>)</span>
-</code></pre>
-</div>
-<pre><code># A tibble: 6 × 41
-  `Image #` Pair_ID Image  Phase    `Examiner (Anon)` `Total Minutiae`
-  &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt;                        &lt;dbl&gt;
-1 L_010     M010003 Latent Analysis EA1338                          31
-2 L_010     M010003 Latent Analysis EA1365                          32
-3 L_010     M010003 Latent Analysis EA1424                          23
-4 L_010     M010003 Latent Analysis EA1474                          15
-5 L_010     M010003 Latent Analysis EA1480                          21
-6 L_010     M010003 Latent Analysis EA1567                          14
-# … with 35 more variables: Min@LQ0 &lt;dbl&gt;, Min@LQ1 &lt;dbl&gt;,
-#   Min@LQ2 &lt;dbl&gt;, Min@LQ3 &lt;dbl&gt;, Min@LQ4 &lt;dbl&gt;, Min@LQ5 &lt;dbl&gt;,
-#   Num cores &lt;dbl&gt;, Num deltas &lt;dbl&gt;, Num others &lt;dbl&gt;,
-#   Overall Clarity (LQAS) &lt;dbl&gt;,
-#   Local quality 1 - Total area (sq mm) &lt;dbl&gt;,
-#   Local quality 2 - Total area (sq mm) &lt;dbl&gt;,
-#   LQ2- Region Count &lt;dbl&gt;,
-#   LQ2- Largest contiguous area (sq mm) &lt;dbl&gt;,
-#   LQ2- Good flow areas (sq mm) &lt;dbl&gt;,
-#   LQ2- Consistency in good flow areas (sq mm) &lt;dbl&gt;,
-#   LQ2- Consistency in largest contiguous area (sq mm) &lt;dbl&gt;,
-#   Local quality 3 - Total area (sq mm) &lt;dbl&gt;,
-#   LQ3- Region Count &lt;dbl&gt;,
-#   LQ3- Largest contiguous area (sq mm) &lt;dbl&gt;,
-#   LQ3- Good flow areas (sq mm) &lt;dbl&gt;,
-#   LQ3- Consistency in good flow areas (sq mm) &lt;dbl&gt;,
-#   LQ3- Consistency in largest contiguous area (sq mm) &lt;dbl&gt;,
-#   Local quality 4 - Total area (sq mm) &lt;dbl&gt;,
-#   LQ4- Region Count &lt;dbl&gt;,
-#   LQ4- Largest contiguous area (sq mm) &lt;dbl&gt;,
-#   LQ4- Good flow areas (sq mm) &lt;dbl&gt;,
-#   LQ4- Consistency in good flow areas (sq mm) &lt;dbl&gt;,
-#   LQ4- Consistency in largest contiguous area (sq mm) &lt;dbl&gt;,
-#   Local quality 5 - Total area (sq mm) &lt;dbl&gt;,
-#   LQ5- Region Count &lt;dbl&gt;,
-#   LQ5- Largest contiguous area (sq mm) &lt;dbl&gt;,
-#   LQ5- Good flow areas (sq mm) &lt;dbl&gt;,
-#   LQ5- Consistency in good flow areas (sq mm) &lt;dbl&gt;,
-#   LQ5- Consistency in largest contiguous area (sq mm) &lt;dbl&gt;</code></pre>
-</div>
-<h1 id="whitebox_analysiscomparison">WhiteBox_AnalysisComparison</h1>
-<details>
-<summary>
-<strong>Variables</strong>
-</summary>
-<ol type="1">
-<li><code>Pair_ID</code>: unique identifier for the image pair</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(M010003\)</span></li>
-</ul>
-<ol start="2" type="1">
-<li><code>Examiner (Anonymized)</code>: unique, anonymized identifier
-for the examiner</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(EA1338\)</span></li>
-</ul>
-<ol start="3" type="1">
-<li><code>Mating</code>: whether the latent and exemplar originate from
-the same source</li>
-</ol>
-<ul>
-<li>ex: <code>Mates</code>, <code>Non-mates</code></li>
-</ul>
-<ol start="4" type="1">
-<li><code>Latent Value (Analysis)</code>:</li>
-</ol>
-<ul>
-<li>ex: <code>VALUE</code></li>
-</ul>
-<ol start="5" type="1">
-<li><code>Comparison determination</code>: how examiner identified
-comparison (or not)</li>
-</ol>
-<ul>
-<li>ex: <code>Indiv</code></li>
-</ul>
-<ol start="6" type="1">
-<li><code>Detailed Outcome</code>:</li>
-</ol>
-<ul>
-<li>ex: <code>TP</code></li>
-</ul>
-<ol start="7" type="1">
-<li><code>Difficulty</code>: examiner’s rating of difficulty to make
-comparison decision</li>
-</ol>
-<ul>
-<li>ex: <code>VERYEASY</code>, <code>EASY</code>, <code>MODERATE</code>,
-<code>DIFFICULT</code>, <code>VERYDIFFICULT</code></li>
-</ul>
-<ol start="8" type="1">
-<li><code>X (Analysis)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(97\)</span></li>
-</ul>
-<ol start="9" type="1">
-<li><code>Y (Analysis)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(771\)</span></li>
-</ul>
-<ol start="10" type="1">
-<li><code>X (Comparison)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(97\)</span></li>
-</ul>
-<ol start="11" type="1">
-<li><code>Y (Comparison)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(771\)</span></li>
-</ul>
-<ol start="12" type="1">
-<li><code>Min(Distance)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(0.000000\)</span></li>
-</ul>
-<ol start="13" type="1">
-<li><code>Latent AC change</code>:</li>
-</ol>
-<ul>
-<li>ex: <code>Retained</code>, <code>Analysis moved</code>,
-<code>Analysis only</code>, <code>Cmp only</code>,
-<code>Cmp moved</code></li>
-</ul>
-<ol start="14" type="1">
-<li><code>Analysis Type</code>:</li>
-</ol>
-<ul>
-<li>ex: <code>minutia</code>, <code>core</code>, <code>NA</code>,
-<code>delta</code></li>
-</ul>
-<ol start="15" type="1">
-<li><code>Cmp Type</code>:</li>
-</ol>
-<ul>
-<li>ex: <code>minutia</code>, <code>core</code>, <code>NA</code>,
-<code>delta</code></li>
-</ul>
-<ol start="16" type="1">
-<li><code>Feature Type</code>:</li>
-</ol>
-<ul>
-<li>ex: <code>minutia</code>, <code>core</code>, <code>Ambiguous</code>,
-<code>delta</code></li>
-</ul>
-<ol start="17" type="1">
-<li><code>Clarity (Analysis)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(3\)</span></li>
-</ul>
-<ol start="18" type="1">
-<li><code>Clarity (Comparison)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(3\)</span></li>
-</ul>
-<ol start="19" type="1">
-<li><code>Median Clarity (Analysis)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(2\)</span></li>
-</ul>
-<ol start="20" type="1">
-<li><code>Median Clarity (Comparison)</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(2\)</span></li>
-</ul>
-<ol start="21" type="1">
-<li><code>Correspondence</code>:</li>
-</ol>
-<ul>
-<li>ex: <code>unassociated</code>, <code>corresponding</code>,
-<code>debatable</code>, <code>Analysis only</code></li>
-</ul>
-<ol start="22" type="1">
-<li><code>Clarity (Corresponding)</code>:</li>
-</ol>
-<ul>
-<li>ex: <code>NA</code>, <span class="math inline">\(3\)</span></li>
-</ul>
-</details>
-<h2 id="data-set-6">Data Set</h2>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>wb_analysiscomparison</span><span class='op'>)</span>
-</code></pre>
-</div>
-<pre><code># A tibble: 6 × 22
-  Pair_ID `Examiner (Anony… Mating `Latent Value (A… `Comparison dete…
-  &lt;chr&gt;   &lt;chr&gt;             &lt;chr&gt;  &lt;chr&gt;             &lt;chr&gt;            
-1 M010003 EA1338            Mates  VALUE             Indiv            
-2 M010003 EA1338            Mates  VALUE             Indiv            
-3 M010003 EA1338            Mates  VALUE             Indiv            
-4 M010003 EA1338            Mates  VALUE             Indiv            
-5 M010003 EA1338            Mates  VALUE             Indiv            
-6 M010003 EA1338            Mates  VALUE             Indiv            
-# … with 17 more variables: Detailed Outcome &lt;chr&gt;, Difficulty &lt;chr&gt;,
-#   X (Analysis) &lt;dbl&gt;, Y (Analysis) &lt;dbl&gt;, X (Comparison) &lt;dbl&gt;,
-#   Y (Comparison) &lt;dbl&gt;, Min(Distance) &lt;dbl&gt;,
-#   Latent AC change &lt;chr&gt;, Analysis Type &lt;chr&gt;, Cmp Type &lt;chr&gt;,
-#   Feature Type &lt;chr&gt;, Clarity (Analysis) &lt;dbl&gt;,
-#   Clarity (Comparison) &lt;dbl&gt;, Median Clarity (Analysis) &lt;dbl&gt;,
-#   Median Clarity (Comparison) &lt;dbl&gt;, Correspondence &lt;chr&gt;,
-#   Clarity (Corresponding) &lt;dbl&gt;</code></pre>
-</div>
-<h1 id="whitebox_lqmetric-lqas">WhiteBox_LQMetric-LQAS</h1>
-<details>
-<summary>
-<strong>Variables</strong>
-</summary>
-<ol type="1">
-<li><code>Image # (Latents only)</code>: unique identifier for the
-latent image print</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(\text{L_010}\)</span></li>
-</ul>
-<ol start="2" type="1">
-<li><code>LQMetric OverallQuality</code>:</li>
-</ol>
-<ul>
-<li>ex: <span class="math inline">\(86\)</span></li>
-</ul>
-<ol start="3" type="1">
-<li><code>LQMetric Est VID</code>:</li>
-</ol>
+<li>Study abroad (A Course in Contemporary Chinese III) in Mandarin through <a href="https://iclp.ntu.edu.tw/">ICLP</a>
 <ul>
-<li>ex: <span class="math inline">\(99\)</span></li>
+<li><em>Award</em>: Best Progress Award</li>
+</ul></li>
 </ul>
-<ol start="4" type="1">
-<li><code>LQMetric Est VCMP</code>:</li>
-</ol>
+<h1 id="spring-2020">Spring 2020</h1>
 <ul>
-<li>ex: <span class="math inline">\(100\)</span></li>
+<li><strong>CHIN 002</strong>: Intro to Mandarin</li>
+<li><strong>CPSC 021</strong>: Intro Computer Science</li>
+<li><strong>ECON 001</strong>: Intro to Econ</li>
+<li><strong>MUSI 044</strong>: Performance Orchestra</li>
+<li><strong>MATH 027</strong>: Linear Algebra</li>
 </ul>
-<ol start="5" type="1">
-<li><code>LQAS Overall Clarity (Auto)</code>:</li>
-</ol>
+<h1 id="fall-2019">Fall 2019</h1>
 <ul>
-<li>ex: <span class="math inline">\(60\)</span></li>
+<li><strong>CHIN 001</strong>: Intro to Mandarin</li>
+<li><strong>ENGL 009R</strong>: Grendel’s Workshop</li>
+<li><strong>MUSI 044</strong>: Performance Orchestra</li>
+<li><strong>MATH 025</strong>: Further Topics in Single Variable Calculus</li>
+<li><strong>STAT 011</strong>: Statistical Methods I</li>
 </ul>
-</details>
-<h2 id="data-set-7">Data Set</h2>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>wb_lqmetric_lqas</span><span class='op'>)</span>
-</code></pre>
-</div>
-<pre><code># A tibble: 6 × 5
-  `Image # (Latent… `LQMetric Overa… `LQMetric Est V… `LQMetric Est V…
-  &lt;chr&gt;                        &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
-1 L_010                           86               99              100
-2 L_020                           42               85               98
-3 L_025                           32               79               96
-4 L_027                           49               90               98
-5 L_028                           99              100              100
-6 L_033                           46               90               98
-# … with 1 more variable: LQAS Overall Clarity (Auto) &lt;dbl&gt;</code></pre>
-</div>
-<div class="sourceCode" id="cb9"><pre
-class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
@@ -3723,15 +2515,6 @@ class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"><
 <div class="d-appendix">
 </div>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 
 <!--radix_placeholder_site_after_body-->
 <!--/radix_placeholder_site_after_body-->
